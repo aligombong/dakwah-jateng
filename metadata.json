@@ -1,0 +1,6 @@
+{
+  "name": "Sistem Data Maqami & Laporan Dakwah",
+  "description": "Aplikasi pencatatan data maqami dakwah terintegrasi dengan laporan bulanan otomatis, grafik tren visual, serta ekspor PDF dan Excel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
