@@ -8,7 +8,6 @@ export interface MaqamiRecord {
   jumlahHalaqah: number;
   jamaahRangka: number;
   jamaah3Hari: number;
-  jamaahJaulah2: number;
 
   // 2. KARKUN
   karkunUlama1Tahun: number;
@@ -53,7 +52,6 @@ export interface HalaqahMaqamiRecord {
   jumlahHalaqah: number; // Jumlah Mahalla / Masjid Binaan
   jamaahRangka: number;
   jamaah3Hari: number;
-  jamaahJaulah2: number;
 
   // 2. KARKUN
   karkunUlama1Tahun: number;

@@ -63,7 +63,6 @@ export function aggregateHalaqahToWilayahRecord(
       jumlahHalaqah: WILAYAH_HALAQAH_COUNTS[normWilayah] || 0,
       jamaahRangka: 0,
       jamaah3Hari: 0,
-      jamaahJaulah2: 0,
       karkunUlama1Tahun: 0,
       karkun4Bulan: 0,
       karkun40Hari: 0,
@@ -111,7 +110,6 @@ export function aggregateHalaqahToWilayahRecord(
     jumlahHalaqah: halaqahCount,
     jamaahRangka: sumField((h) => h.jamaahRangka),
     jamaah3Hari: sumField((h) => h.jamaah3Hari),
-    jamaahJaulah2: sumField((h) => h.jamaahJaulah2),
 
     // 2. KARKUN
     karkunUlama1Tahun: sumField((h) => h.karkunUlama1Tahun),
@@ -202,10 +200,6 @@ export function distributeWilayahRecordToHalaqahs(
     updatedWilayahRecord.jamaah3Hari,
     getWeightsForField((h) => h.jamaah3Hari)
   );
-  const pJaulah2 = partitionInteger(
-    updatedWilayahRecord.jamaahJaulah2,
-    getWeightsForField((h) => h.jamaahJaulah2)
-  );
 
   const pUlama = partitionInteger(
     updatedWilayahRecord.karkunUlama1Tahun,
@@ -285,7 +279,6 @@ export function distributeWilayahRecordToHalaqahs(
     ...h,
     jamaahRangka: pRangka[i],
     jamaah3Hari: p3Hari[i],
-    jamaahJaulah2: pJaulah2[i],
     karkunUlama1Tahun: pUlama[i],
     karkun4Bulan: p4Bulan[i],
     karkun40Hari: p40Hari[i],

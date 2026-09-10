@@ -126,7 +126,7 @@ export const HalaqahDataEntryModal: React.FC<HalaqahDataEntryModalProps> = ({
               <Building2 className="w-4 h-4 text-emerald-600" />
               <span>I. JUMLAH MAHALLA & JAMAAH</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Jumlah Mahalla Binaan
@@ -160,18 +160,6 @@ export const HalaqahDataEntryModal: React.FC<HalaqahDataEntryModalProps> = ({
                   min="0"
                   value={formData.jamaah3Hari}
                   onChange={(e) => handleChange('jamaah3Hari', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Jama'ah Jaulah 2
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.jamaahJaulah2}
-                  onChange={(e) => handleChange('jamaahJaulah2', parseInt(e.target.value))}
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>

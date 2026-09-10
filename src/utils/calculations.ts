@@ -5,7 +5,6 @@ export interface MaqamiSummary {
   jumlahHalaqah: number;
   jamaahRangka: number;
   jamaah3Hari: number;
-  jamaahJaulah2: number;
 
   // 2. KARKUN
   karkunUlama1Tahun: number;
@@ -40,7 +39,6 @@ export function calculateSummary(records: MaqamiRecord[]): MaqamiSummary {
     jumlahHalaqah: 0,
     jamaahRangka: 0,
     jamaah3Hari: 0,
-    jamaahJaulah2: 0,
 
     karkunUlama1Tahun: 0,
     karkun4Bulan: 0,
@@ -70,7 +68,6 @@ export function calculateSummary(records: MaqamiRecord[]): MaqamiSummary {
     sum.jumlahHalaqah += Number(r.jumlahHalaqah) || 0;
     sum.jamaahRangka += Number(r.jamaahRangka) || 0;
     sum.jamaah3Hari += Number(r.jamaah3Hari) || 0;
-    sum.jamaahJaulah2 += Number(r.jamaahJaulah2) || 0;
 
     sum.karkunUlama1Tahun += Number(r.karkunUlama1Tahun) || 0;
     sum.karkun4Bulan += Number(r.karkun4Bulan) || 0;

@@ -50,7 +50,6 @@ export function exportMaqamiToExcel(
   addDataRow('I', 'JUMLAH HALAQAH', 'Jumlah Halaqah', (r) => r.jumlahHalaqah, totalSummary.jumlahHalaqah);
   addDataRow('', '', "Jama'ah Rangka", (r) => r.jamaahRangka, totalSummary.jamaahRangka);
   addDataRow('', '', "Jama'ah 3 Hari", (r) => r.jamaah3Hari, totalSummary.jamaah3Hari);
-  addDataRow('', '', "Jama'ah Jaulah 2", (r) => r.jamaahJaulah2, totalSummary.jamaahJaulah2);
   rows.push([]);
 
   // 2. KARKUN

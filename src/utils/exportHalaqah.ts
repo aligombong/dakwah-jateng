@@ -33,34 +33,33 @@ export function exportHalaqahToExcel(
     ['1', 'Jumlah Mahalla Binaan', record.jumlahHalaqah, wilayahRecord?.jumlahHalaqah || '-', 'Unit Mahalla'],
     ['2', "Jama'ah Rangka", record.jamaahRangka, wilayahRecord?.jamaahRangka || '-', 'Jamaah'],
     ['3', "Jama'ah 3 Hari", record.jamaah3Hari, wilayahRecord?.jamaah3Hari || '-', 'Jamaah'],
-    ['4', "Jama'ah Jaulah 2", record.jamaahJaulah2, wilayahRecord?.jamaahJaulah2 || '-', 'Jamaah'],
     // II. KARKUN
     ['II', 'KARKUN', '', '', ''],
-    ['5', "'Ulama 1 Tahun", record.karkunUlama1Tahun, wilayahRecord?.karkunUlama1Tahun || '-', 'Orang'],
-    ['6', '4 Bulan', record.karkun4Bulan, wilayahRecord?.karkun4Bulan || '-', 'Orang'],
-    ['7', '40 Hari', record.karkun40Hari, wilayahRecord?.karkun40Hari || '-', 'Orang'],
+    ['4', "'Ulama 1 Tahun", record.karkunUlama1Tahun, wilayahRecord?.karkunUlama1Tahun || '-', 'Orang'],
+    ['5', '4 Bulan', record.karkun4Bulan, wilayahRecord?.karkun4Bulan || '-', 'Orang'],
+    ['6', '40 Hari', record.karkun40Hari, wilayahRecord?.karkun40Hari || '-', 'Orang'],
     ['', 'TOTAL KARKUN', totalKarkun, ((wilayahRecord?.karkunUlama1Tahun || 0) + (wilayahRecord?.karkun4Bulan || 0) + (wilayahRecord?.karkun40Hari || 0)), 'Total Orang'],
     // III. MASJID
     ['III', 'MASJID & AMAL', '', '', ''],
-    ['8', 'Jumlah Masjid / Mushalla', record.jumlahMasjidMushalla, wilayahRecord?.jumlahMasjidMushalla || '-', 'Masjid/Mushalla'],
-    ['9', 'Masjid 5 Amal', record.masjid5Amal, wilayahRecord?.masjid5Amal || '-', 'Masjid'],
-    ['10', 'Masjid 4 Amal', record.masjid4Amal, wilayahRecord?.masjid4Amal || '-', 'Masjid'],
-    ['11', 'Masjid 3 Amal', record.masjid3Amal, wilayahRecord?.masjid3Amal || '-', 'Masjid'],
-    ['12', 'Masjid 2 Amal', record.masjid2Amal, wilayahRecord?.masjid2Amal || '-', 'Masjid'],
-    ['13', 'Masjid 1 Amal', record.masjid1Amal, wilayahRecord?.masjid1Amal || '-', 'Masjid'],
+    ['7', 'Jumlah Masjid / Mushalla', record.jumlahMasjidMushalla, wilayahRecord?.jumlahMasjidMushalla || '-', 'Masjid/Mushalla'],
+    ['8', 'Masjid 5 Amal', record.masjid5Amal, wilayahRecord?.masjid5Amal || '-', 'Masjid'],
+    ['9', 'Masjid 4 Amal', record.masjid4Amal, wilayahRecord?.masjid4Amal || '-', 'Masjid'],
+    ['10', 'Masjid 3 Amal', record.masjid3Amal, wilayahRecord?.masjid3Amal || '-', 'Masjid'],
+    ['11', 'Masjid 2 Amal', record.masjid2Amal, wilayahRecord?.masjid2Amal || '-', 'Masjid'],
+    ['12', 'Masjid 1 Amal', record.masjid1Amal, wilayahRecord?.masjid1Amal || '-', 'Masjid'],
     ['', 'TOTAL MASJID ADA AMAL', totalMasjidAmal, ((wilayahRecord?.masjid5Amal || 0) + (wilayahRecord?.masjid4Amal || 0) + (wilayahRecord?.masjid3Amal || 0) + (wilayahRecord?.masjid2Amal || 0) + (wilayahRecord?.masjid1Amal || 0)), 'Masjid'],
     // IV. MASTURAT
     ['IV', 'MASTURAT', '', '', ''],
-    ['14', '2 Bln IP', record.masturat2BlnIP, wilayahRecord?.masturat2BlnIP || '-', 'Jamaah'],
-    ['15', '40 Hari', record.masturat40Hari, wilayahRecord?.masturat40Hari || '-', 'Jamaah'],
-    ['16', '10/15 Hari', record.masturat10_15Hari, wilayahRecord?.masturat10_15Hari || '-', 'Jamaah'],
-    ['17', '3 Hari', record.masturat3Hari, wilayahRecord?.masturat3Hari || '-', 'Jamaah'],
-    ['18', 'Taklim Rumah Harian', record.masturatTaklimRumahHarian, wilayahRecord?.masturatTaklimRumahHarian || '-', 'Rumah'],
-    ['19', 'Taklim Mahalla Pekanan', record.masturatTaklimMahallaPekanan, wilayahRecord?.masturatTaklimMahallaPekanan || '-', 'Mahalla'],
+    ['13', '2 Bln IP', record.masturat2BlnIP, wilayahRecord?.masturat2BlnIP || '-', 'Jamaah'],
+    ['14', '40 Hari', record.masturat40Hari, wilayahRecord?.masturat40Hari || '-', 'Jamaah'],
+    ['15', '10/15 Hari', record.masturat10_15Hari, wilayahRecord?.masturat10_15Hari || '-', 'Jamaah'],
+    ['16', '3 Hari', record.masturat3Hari, wilayahRecord?.masturat3Hari || '-', 'Jamaah'],
+    ['17', 'Taklim Rumah Harian', record.masturatTaklimRumahHarian, wilayahRecord?.masturatTaklimRumahHarian || '-', 'Rumah'],
+    ['18', 'Taklim Mahalla Pekanan', record.masturatTaklimMahallaPekanan, wilayahRecord?.masturatTaklimMahallaPekanan || '-', 'Mahalla'],
     // V. PELAJAR
     ['V', 'PELAJAR & MAHASISWA', '', '', ''],
-    ['20', 'Hadir Malam Markaz', record.pelajarMalamMarkaz, wilayahRecord?.pelajarMalamMarkaz || '-', 'Orang'],
-    ['21', 'Keluar 1 Hari / Bulan', record.pelajarKeluar1Hari, wilayahRecord?.pelajarKeluar1Hari || '-', 'Orang'],
+    ['19', 'Hadir Malam Markaz', record.pelajarMalamMarkaz, wilayahRecord?.pelajarMalamMarkaz || '-', 'Orang'],
+    ['20', 'Keluar 1 Hari / Bulan', record.pelajarKeluar1Hari, wilayahRecord?.pelajarKeluar1Hari || '-', 'Orang'],
   ];
 
   const wb = XLSX.utils.book_new();
@@ -119,7 +118,6 @@ export function exportHalaqahToPdf(
     ['Jumlah Mahalla Binaan', formatNumberIndo(record.jumlahHalaqah), wilayahRecord ? formatNumberIndo(wilayahRecord.jumlahHalaqah) : '-'],
     ["Jama'ah Rangka", formatNumberIndo(record.jamaahRangka), wilayahRecord ? formatNumberIndo(wilayahRecord.jamaahRangka) : '-'],
     ["Jama'ah 3 Hari", formatNumberIndo(record.jamaah3Hari), wilayahRecord ? formatNumberIndo(wilayahRecord.jamaah3Hari) : '-'],
-    ["Jama'ah Jaulah 2", formatNumberIndo(record.jamaahJaulah2), wilayahRecord ? formatNumberIndo(wilayahRecord.jamaahJaulah2) : '-'],
 
     // II. KARKUN
     [{ content: 'II. KARKUN', colSpan: 3, styles: { fontStyle: 'bold', fillColor: [241, 245, 249] } }],
@@ -201,7 +199,6 @@ export function generateHalaqahWhatsAppText(
 • Mahalla Binaan: ${formatNumberIndo(record.jumlahHalaqah)} unit
 • Jamaah Rangka: ${formatNumberIndo(record.jamaahRangka)}
 • Jamaah 3 Hari: ${formatNumberIndo(record.jamaah3Hari)}
-• Jamaah Jaulah 2: ${formatNumberIndo(record.jamaahJaulah2)}
 
 *II. KARKUN*
 • 'Ulama 1 Tahun: ${formatNumberIndo(record.karkunUlama1Tahun)}

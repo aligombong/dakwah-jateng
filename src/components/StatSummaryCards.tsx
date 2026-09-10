@@ -14,7 +14,7 @@ export const StatSummaryCards: React.FC<StatSummaryCardsProps> = ({ summary, per
       : '0';
 
   const totalJamaahKeluar =
-    summary.jamaahRangka + summary.jamaah3Hari + summary.jamaahJaulah2;
+    summary.jamaahRangka + summary.jamaah3Hari;
 
   const totalMasturatKeluar =
     summary.masturat2BlnIP +

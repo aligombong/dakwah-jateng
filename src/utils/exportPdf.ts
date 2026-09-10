@@ -87,7 +87,6 @@ export function exportMaqamiToPdf(
   addRow('JUMLAH HALAQAH', false, true, false, (r) => r.jumlahHalaqah, totalSummary.jumlahHalaqah);
   addRow("Jama'ah Rangka", true, false, false, (r) => r.jamaahRangka, totalSummary.jamaahRangka);
   addRow("Jama'ah 3 Hari", true, false, false, (r) => r.jamaah3Hari, totalSummary.jamaah3Hari);
-  addRow("Jama'ah Jaulah 2", true, false, false, (r) => r.jamaahJaulah2, totalSummary.jamaahJaulah2);
 
   // Section 2: KARKUN
   addRow('KARKUN', false, true, false, () => 0, 0);

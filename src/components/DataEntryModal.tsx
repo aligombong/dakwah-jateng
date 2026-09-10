@@ -46,7 +46,6 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
     jumlahHalaqah: 0,
     jamaahRangka: 0,
     jamaah3Hari: 0,
-    jamaahJaulah2: 0,
     karkunUlama1Tahun: 0,
     karkun4Bulan: 0,
     karkun40Hari: 0,
@@ -85,7 +84,6 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
         jumlahHalaqah: existing.jumlahHalaqah,
         jamaahRangka: existing.jamaahRangka,
         jamaah3Hari: existing.jamaah3Hari,
-        jamaahJaulah2: existing.jamaahJaulah2,
         karkunUlama1Tahun: existing.karkunUlama1Tahun,
         karkun4Bulan: existing.karkun4Bulan,
         karkun40Hari: existing.karkun40Hari,
@@ -110,7 +108,6 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
         jumlahHalaqah: 0,
         jamaahRangka: 0,
         jamaah3Hari: 0,
-        jamaahJaulah2: 0,
         karkunUlama1Tahun: 0,
         karkun4Bulan: 0,
         karkun40Hari: 0,
@@ -373,7 +370,7 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
                 );
               })()}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-medium text-slate-700">
@@ -412,18 +409,6 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
                     min="0"
                     value={formData.jamaah3Hari}
                     onChange={(e) => handleFieldChange('jamaah3Hari', e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Jama'ah Jaulah 2
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.jamaahJaulah2}
-                    onChange={(e) => handleFieldChange('jamaahJaulah2', e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>

@@ -82,12 +82,6 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
       getValue: (r) => r.jamaah3Hari,
       totalVal: summary.jamaah3Hari,
     },
-    {
-      id: 'halaqah-jaulah2',
-      uraian: "Jama'ah Jaulah 2",
-      getValue: (r) => r.jamaahJaulah2,
-      totalVal: summary.jamaahJaulah2,
-    },
 
     // 2. KARKUN
     {

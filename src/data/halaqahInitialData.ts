@@ -43,7 +43,6 @@ export function generateInitialHalaqahRecords(
     // Exactly partition each metric so that the sum of halaqoh records === parent Wilayah total
     const pRangka = partitionInteger(parentRec.jamaahRangka ?? 0, weights);
     const p3Hari = partitionInteger(parentRec.jamaah3Hari ?? 0, weights);
-    const pJaulah2 = partitionInteger(parentRec.jamaahJaulah2 ?? 0, weights);
 
     const pUlama = partitionInteger(parentRec.karkunUlama1Tahun ?? 0, weights);
     const p4Bulan = partitionInteger(parentRec.karkun4Bulan ?? 0, weights);
@@ -78,7 +77,6 @@ export function generateInitialHalaqahRecords(
         jumlahHalaqah: 1,
         jamaahRangka: pRangka[idx],
         jamaah3Hari: p3Hari[idx],
-        jamaahJaulah2: pJaulah2[idx],
 
         // 2. KARKUN
         karkunUlama1Tahun: pUlama[idx],
