@@ -102,11 +102,18 @@ export function exportMaqamiToExcel(
   // Generate Worksheet & Workbook
   const ws = XLSX.utils.aoa_to_sheet(rows);
 
-  // Styling column widths
+  // Styling column widths and number format
   const colWidths = [{ wch: 5 }, { wch: 26 }, { wch: 24 }];
   regionList.forEach(() => colWidths.push({ wch: 14 }));
   colWidths.push({ wch: 20 });
   ws['!cols'] = colWidths;
+
+  // Format all numeric cells with thousands separator
+  Object.keys(ws).forEach((cellKey) => {
+    if (cellKey[0] !== '!' && ws[cellKey] && ws[cellKey].t === 'n') {
+      ws[cellKey].z = '#,##0';
+    }
+  });
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Data Maqami');

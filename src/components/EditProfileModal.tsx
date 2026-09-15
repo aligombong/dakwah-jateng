@@ -14,6 +14,7 @@ import {
   Save,
   CheckCircle2,
   AlertCircle,
+  KeyRound,
 } from 'lucide-react';
 
 interface EditProfileModalProps {
@@ -35,6 +36,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [role, setRole] = useState<UserRole>(currentUser.role);
   const [wilayah, setWilayah] = useState(currentUser.wilayah || 'Semua Wilayah');
   const [password, setPassword] = useState(currentUser.password || '');
+  const [pin, setPin] = useState(currentUser.pin || '');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
@@ -46,6 +48,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       setRole(currentUser.role);
       setWilayah(currentUser.wilayah || 'Semua Wilayah');
       setPassword(currentUser.password || '');
+      setPin(currentUser.pin || '');
       setError('');
     }
   }, [isOpen, currentUser]);
@@ -65,6 +68,11 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       return;
     }
 
+    if (pin && !/^\d{6}$/.test(pin.trim())) {
+      setError('PIN harus berupa 6 digit angka numerik.');
+      return;
+    }
+
     const updatedUser: UserSession = {
       ...currentUser,
       name: name.trim(),
@@ -73,6 +81,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       role: currentUser.role === 'Admin Markaz' ? role : currentUser.role,
       wilayah: currentUser.role === 'Admin Markaz' ? wilayah : currentUser.wilayah,
       password: password.trim() || currentUser.password || 'bismillah123',
+      pin: pin.trim() || currentUser.pin || '123456',
     };
 
     onSaveProfile(updatedUser);
@@ -264,6 +273,34 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 )}
               </div>
             )}
+          </div>
+
+          {/* PIN 6 Angka (Autentikasi Cepat) */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700">
+                PIN 6 Angka (Untuk Login)
+              </label>
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-mono font-medium">
+                6 Digit Unik
+              </span>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <KeyRound className="w-4 h-4 text-emerald-600" />
+              </div>
+              <input
+                type="text"
+                maxLength={6}
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+                placeholder="6 digit angka, misal: 123456"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono tracking-wider text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              />
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1">
+              PIN ini digunakan untuk masuk ke sistem di halaman login tanpa perlu email & kata sandi.
+            </p>
           </div>
 
           {/* Kata Sandi Baru */}

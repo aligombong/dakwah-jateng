@@ -73,6 +73,13 @@ export function exportHalaqahToExcel(
     { wch: 20 },
   ];
 
+  // Format all numeric cells with thousands separator
+  Object.keys(ws).forEach((cellKey) => {
+    if (cellKey[0] !== '!' && ws[cellKey] && ws[cellKey].t === 'n') {
+      ws[cellKey].z = '#,##0';
+    }
+  });
+
   XLSX.utils.book_append_sheet(wb, ws, `Halaqoh_${record.halaqah.substring(0, 20)}`);
   XLSX.writeFile(wb, `Laporan_Maqami_Halaqoh_${record.wilayah}_${record.halaqah}_${record.periode}.xlsx`);
 }

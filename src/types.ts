@@ -87,7 +87,8 @@ export interface UserSession {
   id: string;
   name: string;
   email: string;
-  whatsapp?: string; // Nomor WhatsApp aktif untuk koordinasi
+  pin: string; // 6 digit PIN unik untuk autentikasi cepat
+  whatsapp?: string; // Nomor WhatsApp aktif untuk koordinasi dan reset PIN
   role: UserRole;
   wilayah?: string; // If restricted to a specific region, or 'Semua Wilayah'
   subWilayah?: string; // Sub Wilayah / Halaqoh spesifik (opsional)

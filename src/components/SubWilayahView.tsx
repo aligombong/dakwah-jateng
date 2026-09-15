@@ -7,6 +7,7 @@ import {
 } from '../data/subWilayahData';
 import { WILAYAH_LIST } from '../data/initialData';
 import { UserSession } from '../types';
+import { formatNumberIndo } from '../utils/calculations';
 import {
   MapPin,
   Search,
@@ -118,19 +119,19 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
             <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3.5 text-center">
               <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">
-                {TOTAL_SUB_WILAYAH_COUNT}
+                {formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)}
               </div>
               <div className="text-[11px] text-slate-300 font-medium mt-0.5">Total Halaqoh</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3.5 text-center">
               <div className="text-2xl sm:text-3xl font-extrabold text-teal-300 font-mono">
-                {WILAYAH_LIST.length}
+                {formatNumberIndo(WILAYAH_LIST.length)}
               </div>
               <div className="text-[11px] text-slate-300 font-medium mt-0.5">Wilayah Markaz</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3.5 text-center col-span-2 sm:col-span-1">
               <div className="text-2xl sm:text-3xl font-extrabold text-amber-300 font-mono">
-                {filteredItems.length}
+                {formatNumberIndo(filteredItems.length)}
               </div>
               <div className="text-[11px] text-slate-300 font-medium mt-0.5">Ditampilkan</div>
             </div>
@@ -210,7 +211,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            Semua Wilayah ({TOTAL_SUB_WILAYAH_COUNT})
+            Semua Wilayah ({formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)})
           </button>
           {WILAYAH_LIST.map((wil) => {
             const count = SUB_WILAYAH_DATA[wil]?.length || 0;
@@ -479,7 +480,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
           </div>
           <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 text-xs text-slate-500 flex items-center justify-between">
             <span>
-              Menampilkan {filteredItems.length} dari {TOTAL_SUB_WILAYAH_COUNT} Sub Wilayah / Halaqoh
+              Menampilkan {formatNumberIndo(filteredItems.length)} dari {formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)} Sub Wilayah / Halaqoh
             </span>
             <span className="font-mono text-[11px]">Jawa Tengah & D.I. Yogyakarta</span>
           </div>

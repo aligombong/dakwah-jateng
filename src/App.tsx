@@ -28,7 +28,7 @@ import { WILAYAH_HALAQAH_COUNTS, getSubWilayahList, getSubWilayahCount } from '.
 import { CheckCircle2, RotateCcw, Landmark, FileSpreadsheet, FileText, ShieldAlert, UserCheck } from 'lucide-react';
 
 const STORAGE_KEY_USER = 'masqami_auth_user_v1';
-const STORAGE_KEY_DATA = 'masqami_records_data_v2';
+const STORAGE_KEY_DATA = 'masqami_records_data_v3';
 const STORAGE_KEY_USERS_LIST = 'masqami_users_list_v1';
 
 export default function App() {
@@ -44,18 +44,16 @@ export default function App() {
           const missingDefaults = DEFAULT_USERS.filter((du) => !existingIds.has(du.id));
           const merged = [...parsed, ...missingDefaults];
 
-          // Ensure every user has whatsapp field populated
+          // Ensure every user has whatsapp and pin fields populated
           return merged.map((u: UserSession) => {
-            if (!u.whatsapp) {
-              const matchedDefault = DEFAULT_USERS.find(
-                (du) => du.id === u.id || du.email.toLowerCase() === u.email.toLowerCase()
-              );
-              return {
-                ...u,
-                whatsapp: matchedDefault?.whatsapp || '0812-3456-7890',
-              };
-            }
-            return u;
+            const matchedDefault = DEFAULT_USERS.find(
+              (du) => du.id === u.id || du.email.toLowerCase() === u.email.toLowerCase()
+            );
+            return {
+              ...u,
+              whatsapp: u.whatsapp || matchedDefault?.whatsapp || '0812-3456-7890',
+              pin: u.pin || matchedDefault?.pin || '990001',
+            };
           });
         }
       }
@@ -86,12 +84,37 @@ export default function App() {
 
   // Data Records State (Wilayah records derived directly from halaqoh aggregation)
   const [records, setRecords] = useState<MaqamiRecord[]>(() => {
+    // Purge deprecated period data from localStorage
+    try {
+      ['2026-10', '2026-11', '2026-12'].forEach((delPer) => {
+        localStorage.removeItem(`masqami_halaqah_records_v1_${delPer}`);
+      });
+      localStorage.removeItem('masqami_records_data_v2');
+      localStorage.removeItem('masqami_records_data_v1');
+    } catch (_) {}
+
     try {
       const saved = localStorage.getItem(STORAGE_KEY_DATA);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          const validPeriodSet = new Set(DAFTAR_PERIODE.map((p) => p.value));
+          const filtered = parsed.filter((r: MaqamiRecord) => validPeriodSet.has(r.periode));
+          const existingPeriods = new Set(filtered.map((r: MaqamiRecord) => r.periode));
+
+          // If all current periods exist, return filtered
+          const baseInitial = generateInitialData();
+          const missing = baseInitial.filter((r) => !existingPeriods.has(r.periode));
+          if (missing.length === 0 && filtered.length === parsed.length) {
+            return filtered;
+          }
+
+          // Otherwise merge missing periods (such as Jan - Mei 2026) and persist
+          const merged = [...filtered, ...missing];
+          try {
+            localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(merged));
+          } catch (_) {}
+          return merged;
         }
       }
     } catch (e) {
@@ -216,6 +239,16 @@ export default function App() {
       setUser(updatedUser);
     }
     showToast(`Data pengguna "${updatedUser.name}" berhasil diperbarui.`);
+  };
+
+  const handleResetPin = (userId: string, newPin: string) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, pin: newPin } : u))
+    );
+    if (user && user.id === userId) {
+      setUser((prev) => (prev ? { ...prev, pin: newPin } : null));
+    }
+    showToast('Alhamdulillah, PIN berhasil diperbarui. Silakan masuk menggunakan PIN baru Anda.');
   };
 
   const handleDeleteUser = (userId: string) => {
@@ -375,7 +408,7 @@ export default function App() {
 
   // If not logged in, render Login Page
   if (!user) {
-    return <LoginPage onLogin={handleLogin} usersList={users} />;
+    return <LoginPage onLogin={handleLogin} usersList={users} onResetPin={handleResetPin} />;
   }
 
   return (

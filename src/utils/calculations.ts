@@ -98,7 +98,20 @@ export function calculateSummary(records: MaqamiRecord[]): MaqamiSummary {
   return sum;
 }
 
-export function formatNumberIndo(num: number): string {
-  if (num === null || num === undefined) return '0';
-  return new Intl.NumberFormat('id-ID').format(num);
+export function formatNumberIndo(num: number | string | undefined | null): string {
+  if (num === null || num === undefined || num === '') return '0';
+  const n = typeof num === 'string' ? parseFloat(num.toString().replace(/\./g, '').replace(/,/g, '.')) : num;
+  if (isNaN(n)) return '0';
+
+  const isNegative = n < 0;
+  const absNum = Math.abs(n);
+  const parts = absNum.toString().split('.');
+  const integerPart = parts[0];
+  const decimalPart = parts[1];
+
+  // Always use dot '.' as thousands separator in Indonesian notation (e.g. 1.000, 25.000, 1.250.000)
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  const result = decimalPart !== undefined ? `${formattedInteger},${decimalPart}` : formattedInteger;
+  return isNegative ? `-${result}` : result;
 }

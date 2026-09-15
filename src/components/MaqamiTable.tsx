@@ -555,22 +555,22 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                           <div className="flex items-center gap-2 text-[11px] text-slate-600 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
                             <span title="Jamaah Rangka">
                               <span className="text-slate-400">Rangka:</span>{' '}
-                              <strong className="text-slate-800">{halRec.jamaahRangka}</strong>
+                              <strong className="text-slate-800">{formatNumberIndo(halRec.jamaahRangka)}</strong>
                             </span>
                             <span className="text-slate-300">&bull;</span>
                             <span title="Karkun 4 Bulan">
                               <span className="text-slate-400">4Bln:</span>{' '}
-                              <strong className="text-slate-800">{halRec.karkun4Bulan}</strong>
+                              <strong className="text-slate-800">{formatNumberIndo(halRec.karkun4Bulan)}</strong>
                             </span>
                             <span className="text-slate-300">&bull;</span>
                             <span title="Masjid 5 Amal">
                               <span className="text-slate-400">M5A:</span>{' '}
-                              <strong className="text-slate-800">{halRec.masjid5Amal}</strong>
+                              <strong className="text-slate-800">{formatNumberIndo(halRec.masjid5Amal)}</strong>
                             </span>
                             <span className="text-slate-300">&bull;</span>
                             <span title="Masturat 3 Hari">
                               <span className="text-slate-400">Mast3H:</span>{' '}
-                              <strong className="text-slate-800">{halRec.masturat3Hari}</strong>
+                              <strong className="text-slate-800">{formatNumberIndo(halRec.masturat3Hari)}</strong>
                             </span>
                           </div>
                         )}

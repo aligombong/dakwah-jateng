@@ -14,13 +14,15 @@ export const WILAYAH_LIST = [
 ];
 
 export const DAFTAR_PERIODE = [
-  { value: '2026-12', label: 'Desember 2026' },
-  { value: '2026-11', label: 'November 2026' },
-  { value: '2026-10', label: 'Oktober 2026' },
   { value: '2026-09', label: 'September 2026' },
   { value: '2026-08', label: 'Agustus 2026' },
   { value: '2026-07', label: 'Juli 2026' },
   { value: '2026-06', label: 'Juni 2026' },
+  { value: '2026-05', label: 'Mei 2026' },
+  { value: '2026-04', label: 'April 2026' },
+  { value: '2026-03', label: 'Maret 2026' },
+  { value: '2026-02', label: 'Februari 2026' },
+  { value: '2026-01', label: 'Januari 2026' },
 ];
 
 export const DEFAULT_USERS: UserSession[] = [
@@ -28,6 +30,7 @@ export const DEFAULT_USERS: UserSession[] = [
     id: 'user-admin',
     name: 'Ustadz Ahmad Fauzi',
     email: 'admin@masqami.id',
+    pin: '990001',
     whatsapp: '0812-2800-9901',
     role: 'Admin Markaz',
     wilayah: 'Semua Wilayah',
@@ -37,6 +40,7 @@ export const DEFAULT_USERS: UserSession[] = [
     id: 'user-solo',
     name: 'Haji Sulaiman',
     email: 'solo@masqami.id',
+    pin: '223344',
     whatsapp: '0813-2911-4422',
     role: 'Petugas Wilayah',
     wilayah: 'SOLO',
@@ -46,6 +50,7 @@ export const DEFAULT_USERS: UserSession[] = [
     id: 'user-hal-mungkid',
     name: 'Ustadz Ridwan (Halaqoh Mungkid)',
     email: 'mungkid@masqami.id',
+    pin: '334455',
     whatsapp: '0812-7788-1122',
     role: 'Petugas Halaqoh',
     wilayah: 'MAGELANG',
@@ -55,6 +60,7 @@ export const DEFAULT_USERS: UserSession[] = [
     id: 'user-hal-mertoyudan',
     name: 'Akhi Danang (Halaqoh Mertoyudan)',
     email: 'mertoyudan@masqami.id',
+    pin: '445566',
     whatsapp: '0813-9988-3344',
     role: 'Petugas Halaqoh',
     wilayah: 'MAGELANG',
@@ -64,6 +70,7 @@ export const DEFAULT_USERS: UserSession[] = [
     id: 'user-pwt',
     name: 'Mas Irfan Hakim',
     email: 'laporan@masqami.id',
+    pin: '556677',
     whatsapp: '0857-4321-8899',
     role: 'Khidmat Laporan',
     wilayah: 'PURWOKERTO',
@@ -331,14 +338,19 @@ export function generateInitialData(): MaqamiRecord[] {
     });
   });
 
-  // Forward periods (Oktober 2026, November 2026, Desember 2026)
-  const forwardConfigs = [
-    { periode: '2026-10', label: 'Oktober 2026', factor: 1.03, date: '2026-10-01 08:00' },
-    { periode: '2026-11', label: 'November 2026', factor: 1.07, date: '2026-11-01 08:00' },
-    { periode: '2026-12', label: 'Desember 2026', factor: 1.12, date: '2026-12-01 08:00' },
+  // Historical months (Agustus 2026 down to Januari 2026) with realistic previous states for month-over-month bar charts
+  const historyConfigs = [
+    { periode: '2026-08', label: 'Agustus 2026', factor: 0.94, date: '2026-08-30 18:00' },
+    { periode: '2026-07', label: 'Juli 2026', factor: 0.89, date: '2026-07-30 18:00' },
+    { periode: '2026-06', label: 'Juni 2026', factor: 0.84, date: '2026-06-30 18:00' },
+    { periode: '2026-05', label: 'Mei 2026', factor: 0.80, date: '2026-05-30 18:00' },
+    { periode: '2026-04', label: 'April 2026', factor: 0.76, date: '2026-04-30 18:00' },
+    { periode: '2026-03', label: 'Maret 2026', factor: 0.72, date: '2026-03-30 18:00' },
+    { periode: '2026-02', label: 'Februari 2026', factor: 0.68, date: '2026-02-28 18:00' },
+    { periode: '2026-01', label: 'Januari 2026', factor: 0.65, date: '2026-01-30 18:00' },
   ];
 
-  forwardConfigs.forEach(({ periode, label, factor, date }) => {
+  historyConfigs.forEach(({ periode, label, factor, date }) => {
     WILAYAH_LIST.forEach((wil) => {
       const raw = RAW_SEPTEMBER_2026[wil] || {};
       records.push({
@@ -367,47 +379,6 @@ export function generateInitialData(): MaqamiRecord[] {
         pelajarMalamMarkaz: Math.max(0, Math.round((raw.pelajarMalamMarkaz ?? 0) * factor)),
         pelajarKeluar1Hari: Math.max(0, Math.round((raw.pelajarKeluar1Hari ?? 0) * factor)),
         updatedAt: date,
-        updatedBy: 'Target & Proyeksi Dakwah',
-      });
-    });
-  });
-
-  // Historical months (Agustus 2026, Juli 2026, Juni 2026) with realistic previous states for month-over-month bar charts
-  const historyConfigs = [
-    { periode: '2026-08', label: 'Agustus 2026', factor: 0.94 },
-    { periode: '2026-07', label: 'Juli 2026', factor: 0.89 },
-    { periode: '2026-06', label: 'Juni 2026', factor: 0.83 },
-  ];
-
-  historyConfigs.forEach(({ periode, label, factor }) => {
-    WILAYAH_LIST.forEach((wil) => {
-      const raw = RAW_SEPTEMBER_2026[wil] || {};
-      records.push({
-        id: `rec-${periode}-${wil.toLowerCase()}`,
-        wilayah: wil,
-        periode,
-        periodeLabel: label,
-        jumlahHalaqah: Math.max(1, Math.round((raw.jumlahHalaqah ?? 0) * factor)),
-        jamaahRangka: Math.max(0, Math.round((raw.jamaahRangka ?? 0) * factor)),
-        jamaah3Hari: Math.max(0, Math.round((raw.jamaah3Hari ?? 0) * factor)),
-        karkunUlama1Tahun: Math.max(0, Math.round((raw.karkunUlama1Tahun ?? 0) * factor)),
-        karkun4Bulan: Math.max(0, Math.round((raw.karkun4Bulan ?? 0) * factor)),
-        karkun40Hari: Math.max(0, Math.round((raw.karkun40Hari ?? 0) * factor)),
-        jumlahMasjidMushalla: raw.jumlahMasjidMushalla ?? 0,
-        masjid5Amal: Math.max(0, Math.round((raw.masjid5Amal ?? 0) * factor)),
-        masjid4Amal: Math.max(0, Math.round((raw.masjid4Amal ?? 0) * factor)),
-        masjid3Amal: Math.max(0, Math.round((raw.masjid3Amal ?? 0) * factor)),
-        masjid2Amal: Math.max(0, Math.round((raw.masjid2Amal ?? 0) * factor)),
-        masjid1Amal: Math.max(0, Math.round((raw.masjid1Amal ?? 0) * factor)),
-        masturat2BlnIP: Math.max(0, Math.round((raw.masturat2BlnIP ?? 0) * factor)),
-        masturat40Hari: Math.max(0, Math.round((raw.masturat40Hari ?? 0) * factor)),
-        masturat10_15Hari: Math.max(0, Math.round((raw.masturat10_15Hari ?? 0) * factor)),
-        masturat3Hari: Math.max(0, Math.round((raw.masturat3Hari ?? 0) * factor)),
-        masturatTaklimRumahHarian: Math.max(0, Math.round((raw.masturatTaklimRumahHarian ?? 0) * factor)),
-        masturatTaklimMahallaPekanan: Math.max(0, Math.round((raw.masturatTaklimMahallaPekanan ?? 0) * factor)),
-        pelajarMalamMarkaz: Math.max(0, Math.round((raw.pelajarMalamMarkaz ?? 0) * factor)),
-        pelajarKeluar1Hari: Math.max(0, Math.round((raw.pelajarKeluar1Hari ?? 0) * factor)),
-        updatedAt: '2026-08-30 18:00',
         updatedBy: 'Sistem Sinkronisasi',
       });
     });

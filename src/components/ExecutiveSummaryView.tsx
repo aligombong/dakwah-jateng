@@ -249,7 +249,7 @@ export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
             </div>
           </div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl self-start sm:self-auto">
-            <span>Total: {TOTAL_SUB_WILAYAH_COUNT} Halaqoh</span>
+            <span>Total: {formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)} Halaqoh</span>
           </div>
         </div>
 
@@ -267,7 +267,7 @@ export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
                   </span>
                   <div className="flex items-baseline gap-1 mt-1">
                     <span className="text-lg font-extrabold text-slate-900 font-mono">
-                      {list.length}
+                      {formatNumberIndo(list.length)}
                     </span>
                     <span className="text-[10px] text-slate-500">halaqoh</span>
                   </div>
