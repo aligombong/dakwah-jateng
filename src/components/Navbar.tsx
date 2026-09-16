@@ -239,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Ringkasan Eksekutif</span>
           </button>
 
-          {/* User Management Tab (Accessible for Admin Markaz and Petugas Wilayah) */}
+          {/* User Management Tab (Accessible for Admin Provinsi and Petugas Wilayah) */}
           <button
             id="tab-manajemen-user"
             onClick={() => setActiveTab('manajemen-user')}
@@ -253,7 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>
               {user.role === 'Petugas Wilayah' ? 'Kelola Petugas Halaqoh' : 'Kelola Pengguna'}
             </span>
-            {user.role === 'Admin Markaz' ? (
+            {user.role === 'Admin Provinsi' ? (
               <span className="text-[10px] bg-emerald-600/40 text-emerald-100 px-1.5 py-0.2 rounded font-mono font-medium">
                 Admin
               </span>

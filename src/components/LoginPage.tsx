@@ -37,6 +37,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const [successUser, setSuccessUser] = useState<UserSession | null>(null);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isDemoAccordionOpen, setIsDemoAccordionOpen] = useState(false);
+  const [demoHalaqahSearch, setDemoHalaqahSearch] = useState('');
+  const [demoWilayahFilter, setDemoWilayahFilter] = useState('ALL');
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -363,37 +365,114 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </button>
 
           {isDemoAccordionOpen && (
-            <div className="p-3 pt-1 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              {(usersList.length > 0 ? usersList : DEFAULT_USERS).slice(0, 5).map((u) => (
-                <button
-                  key={u.id}
-                  type="button"
-                  onClick={() => handleQuickFillPin(u.pin)}
-                  className="p-2.5 bg-slate-800/80 hover:bg-slate-800 hover:border-emerald-500/50 border border-slate-700/60 rounded-xl text-left transition-all group cursor-pointer"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-200 group-hover:text-emerald-300 truncate max-w-[150px]">
-                      {u.name}
-                    </span>
-                    <span className="font-mono font-bold text-amber-400 bg-amber-950/50 border border-amber-800/40 px-1.5 py-0.2 rounded text-[11px]">
-                      {u.pin}
-                    </span>
+            <div className="p-3 pt-2 border-t border-slate-800 space-y-3 text-xs">
+              <div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                  <span>Akun Peran Utama</span>
+                  <span className="text-[10px] text-emerald-400 font-normal">Klik untuk langsung isi PIN</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {(usersList.length > 0 ? usersList : DEFAULT_USERS).slice(0, 5).map((u) => (
+                    <button
+                      key={u.id}
+                      type="button"
+                      onClick={() => handleQuickFillPin(u.pin)}
+                      className="p-2 bg-slate-800/80 hover:bg-slate-800 hover:border-emerald-500/50 border border-slate-700/60 rounded-xl text-left transition-all group cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-slate-200 group-hover:text-emerald-300 truncate max-w-[150px]">
+                          {u.name}
+                        </span>
+                        <span className="font-mono font-bold text-amber-400 bg-amber-950/50 border border-amber-800/40 px-1.5 py-0.2 rounded text-[11px]">
+                          {u.pin}
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-0.5 flex items-center justify-between">
+                        <span>{u.role}</span>
+                        <span className="text-slate-500 font-mono">
+                          {u.subWilayah || u.wilayah}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 151 Halaqoh Quick Search / Tester */}
+              <div className="pt-2 border-t border-slate-800">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    Cari Cepat Akun 151 Halaqoh
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
-                    <span>{u.role}</span>
-                    <span className="text-slate-500 font-mono">
-                      {u.subWilayah || u.wilayah}
-                    </span>
-                  </div>
-                </button>
-              ))}
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    Total: {usersList.filter((u) => u.role === 'Petugas Halaqoh').length} Halaqoh
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 mb-2">
+                  <input
+                    type="text"
+                    value={demoHalaqahSearch}
+                    onChange={(e) => setDemoHalaqahSearch(e.target.value)}
+                    placeholder="Ketik nama halaqoh (cth: Salaman, Gombong, Jepara)..."
+                    className="flex-1 px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                  />
+                  {demoHalaqahSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setDemoHalaqahSearch('')}
+                      className="px-2 py-1.5 text-slate-400 hover:text-slate-200 text-xs cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1">
+                  {usersList
+                    .filter((u) => u.role === 'Petugas Halaqoh')
+                    .filter((u) => {
+                      if (!demoHalaqahSearch) return true;
+                      const q = demoHalaqahSearch.toLowerCase();
+                      return (
+                        u.name.toLowerCase().includes(q) ||
+                        (u.subWilayah && u.subWilayah.toLowerCase().includes(q)) ||
+                        (u.wilayah && u.wilayah.toLowerCase().includes(q)) ||
+                        u.pin.includes(q)
+                      );
+                    })
+                    .slice(0, 8)
+                    .map((u) => (
+                      <button
+                        key={u.id}
+                        type="button"
+                        onClick={() => handleQuickFillPin(u.pin)}
+                        className="w-full p-2 bg-slate-800/60 hover:bg-slate-800 hover:border-emerald-500/50 border border-slate-700/50 rounded-lg text-left transition-all flex items-center justify-between group cursor-pointer"
+                      >
+                        <div className="truncate mr-2">
+                          <div className="font-semibold text-slate-200 group-hover:text-emerald-300 text-xs truncate">
+                            {u.subWilayah}
+                          </div>
+                          <div className="text-[10px] text-slate-500">
+                            Wilayah {u.wilayah} &bull; {u.email}
+                          </div>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <span className="font-mono font-bold text-amber-400 bg-amber-950/60 border border-amber-800/40 px-1.5 py-0.5 rounded text-[11px]">
+                            {u.pin}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Footer info */}
         <div className="text-center mt-5 text-[11px] text-slate-500">
-          <span>Hak Akses Terdistribusi: Admin Markaz &bull; Petugas Wilayah &bull; Petugas Halaqoh &bull; Khidmat Laporan</span>
+          <span>Hak Akses Terdistribusi: Admin Provinsi &bull; Petugas Wilayah &bull; Petugas Halaqoh &bull; Khidmat Laporan</span>
         </div>
       </div>
 

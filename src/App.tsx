@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserSession, MaqamiRecord, HalaqahMaqamiRecord, ViewTab } from './types';
-import { WILAYAH_LIST, DAFTAR_PERIODE, DEFAULT_USERS, generateInitialData } from './data/initialData';
+import { WILAYAH_LIST, DAFTAR_PERIODE, DEFAULT_USERS, BASE_DEFAULT_USERS, generateInitialData } from './data/initialData';
 import { calculateSummary } from './utils/calculations';
 import { exportMaqamiToExcel } from './utils/exportExcel';
 import { exportMaqamiToPdf } from './utils/exportPdf';
@@ -24,7 +24,12 @@ import {
   aggregateAllWilayahFromHalaqah,
   distributeWilayahRecordToHalaqahs,
 } from './utils/halaqahAggregation';
-import { WILAYAH_HALAQAH_COUNTS, getSubWilayahList, getSubWilayahCount } from './data/subWilayahData';
+import {
+  WILAYAH_HALAQAH_COUNTS,
+  getSubWilayahList,
+  getSubWilayahCount,
+  generateHalaqahAccounts,
+} from './data/subWilayahData';
 import { CheckCircle2, RotateCcw, Landmark, FileSpreadsheet, FileText, ShieldAlert, UserCheck } from 'lucide-react';
 
 const STORAGE_KEY_USER = 'masqami_auth_user_v1';
@@ -39,18 +44,27 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge any missing default users (e.g. newly added Petugas Halaqoh roles)
-          const existingIds = new Set(parsed.map((u: UserSession) => u.id));
-          const missingDefaults = DEFAULT_USERS.filter((du) => !existingIds.has(du.id));
-          const merged = [...parsed, ...missingDefaults];
+          // Buatkan akun untuk 151 halaqah (abaikan jika halaqah sudah memiliki akun di parsed)
+          const cleanParsed = parsed.map((u: any) => ({
+            ...u,
+            role: u.role === 'Admin Markaz' ? 'Admin Provinsi' : u.role,
+          }));
+          const newHalaqahAccounts = generateHalaqahAccounts(cleanParsed);
 
-          // Ensure every user has whatsapp and pin fields populated
+          // Pastikan akun utama (Admin Provinsi, dsb.) tetap ada jika belum terdaftar
+          const existingIds = new Set(cleanParsed.map((u: UserSession) => u.id));
+          const missingBaseDefaults = BASE_DEFAULT_USERS.filter((du) => !existingIds.has(du.id));
+
+          const merged = [...cleanParsed, ...missingBaseDefaults, ...newHalaqahAccounts];
+
+          // Pastikan setiap akun memiliki nomor WhatsApp dan PIN 6 angka yang valid
           return merged.map((u: UserSession) => {
             const matchedDefault = DEFAULT_USERS.find(
               (du) => du.id === u.id || du.email.toLowerCase() === u.email.toLowerCase()
             );
             return {
               ...u,
+              role: (u.role as string) === 'Admin Markaz' ? 'Admin Provinsi' : u.role,
               whatsapp: u.whatsapp || matchedDefault?.whatsapp || '0812-3456-7890',
               pin: u.pin || matchedDefault?.pin || '990001',
             };
@@ -259,6 +273,17 @@ export default function App() {
     const target = users.find((u) => u.id === userId);
     setUsers((prev) => prev.filter((u) => u.id !== userId));
     showToast(`Pengguna "${target?.name || 'terpilih'}" berhasil dihapus.`);
+  };
+
+  const handleGenerateAllHalaqahAccounts = () => {
+    const newAccounts = generateHalaqahAccounts(users);
+    if (newAccounts.length === 0) {
+      showToast('Alhamdulillah, seluruh 151 halaqoh telah memiliki akun petugas.');
+      return 0;
+    }
+    setUsers((prev) => [...prev, ...newAccounts]);
+    showToast(`Alhamdulillah, berhasil membuat ${newAccounts.length} akun halaqoh baru (halaqoh yang sudah berakun diabaikan).`);
+    return newAccounts.length;
   };
 
   // Filter records for current selected month
@@ -505,13 +530,14 @@ export default function App() {
         )}
 
         {activeTab === 'manajemen-user' && (
-          (user.role === 'Admin Markaz' || user.role === 'Petugas Wilayah') ? (
+          (user.role === 'Admin Provinsi' || user.role === 'Petugas Wilayah') ? (
             <UserManagementView
               users={users}
               currentUser={user}
               onAddUser={handleAddUser}
               onUpdateUser={handleUpdateUser}
               onDeleteUser={handleDeleteUser}
+              onGenerateAllHalaqahAccounts={handleGenerateAllHalaqahAccounts}
               initialSubWilayahForAdd={pendingAssignSubWilayah}
               onClearInitialSubWilayah={() => setPendingAssignSubWilayah(undefined)}
             />
@@ -522,7 +548,7 @@ export default function App() {
               </div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Akses Terbatas</h3>
               <p className="text-xs text-slate-500 leading-relaxed mb-6">
-                Halaman Manajemen Pengguna dikhususkan untuk <strong>Admin Markaz</strong> dan <strong>Petugas Wilayah</strong> untuk mengelola otorisasi dan penugasan Petugas Halaqoh.
+                Halaman Manajemen Pengguna dikhususkan untuk <strong>Admin Provinsi</strong> dan <strong>Petugas Wilayah</strong> untuk mengelola otorisasi dan penugasan Petugas Halaqoh.
               </p>
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left text-xs mb-6">
                 <div className="font-semibold text-slate-800 mb-1">Status Akun Anda Saat Ini:</div>

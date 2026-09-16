@@ -151,7 +151,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
       currentUser.wilayah?.toUpperCase() === selectedWilayah.toUpperCase());
 
   const canEditCurrentHalaqah = useMemo(() => {
-    if (currentUser.role === 'Admin Markaz') return true;
+    if (currentUser.role === 'Admin Provinsi') return true;
     if (currentUser.role === 'Petugas Wilayah') {
       return (
         currentUser.wilayah === 'Semua Wilayah' ||
@@ -169,9 +169,9 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
     return false;
   }, [currentUser, selectedWilayah, selectedHalaqah]);
 
-  // Petugas Wilayah & Admin Markaz can manage Petugas Halaqoh
+  // Petugas Wilayah & Admin Provinsi can manage Petugas Halaqoh
   const canManageHalaqahOfficers = useMemo(() => {
-    if (currentUser.role === 'Admin Markaz') return true;
+    if (currentUser.role === 'Admin Provinsi') return true;
     if (currentUser.role === 'Petugas Wilayah') {
       return (
         currentUser.wilayah === 'Semua Wilayah' ||

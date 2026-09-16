@@ -85,7 +85,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
 
     if (!matched) {
       setErrorMsg(
-        'Nomor WhatsApp ini tidak terdaftar pada akun petugas manapun. Periksa kembali atau hubungi Admin Markaz.'
+        'Nomor WhatsApp ini tidak terdaftar pada akun petugas manapun. Periksa kembali atau hubungi Admin Provinsi.'
       );
       return;
     }
@@ -314,7 +314,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
-            <span>Admin Markas</span>
+            <span>Admin Provinsi</span>
           </button>
         </div>
 
@@ -614,7 +614,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
             </div>
           )}
 
-          {/* TAB 3: ADMIN MARKAS */}
+          {/* TAB 3: ADMIN PROVINSI */}
           {activeTab === 'admin' && (
             <div className="space-y-4">
               <div className="p-4 bg-slate-800/90 border border-slate-700 rounded-2xl">
@@ -624,7 +624,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-slate-100">
-                      Ustadz Ahmad Fauzi (Admin Markaz)
+                      Ustadz Ahmad Fauzi (Admin Provinsi)
                     </h4>
                     <p className="text-xs text-amber-400 font-medium">
                       Pengelola Kredensial & Autentikasi Jawa Tengah
@@ -638,7 +638,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
                     <span className="font-mono font-bold text-emerald-400">0812-2800-9901</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Email Markaz:</span>
+                    <span className="text-slate-400">Email Admin:</span>
                     <span className="font-mono text-slate-200">admin@masqami.id</span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -651,16 +651,16 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
               <div className="p-3.5 bg-slate-800/50 border border-slate-700/60 rounded-xl text-xs text-slate-400 space-y-1.5">
                 <div className="flex items-center gap-1.5 font-semibold text-slate-200">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Prosedur Reset oleh Admin Markaz:</span>
+                  <span>Prosedur Reset oleh Admin Provinsi:</span>
                 </div>
                 <p className="leading-relaxed">
-                  Admin Markaz memiliki wewenang langsung di menu <strong>Kelola Pengguna</strong> untuk melihat, mengatur ulang, atau mengacak PIN 6 angka baru bagi setiap petugas yang lupa PIN.
+                  Admin Provinsi memiliki wewenang langsung di menu <strong>Kelola Pengguna</strong> untuk melihat, mengatur ulang, atau mengacak PIN 6 angka baru bagi setiap petugas yang lupa PIN.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                 <a
-                  href="https://wa.me/6281228009901?text=Assalamu%27alaikum%20Warahmatullahi%20Wabarakatuh%20Ustadz%20Ahmad%20Fauzi%20(Admin%20Markaz).%20Saya%20petugas%20Maqami,%20mohon%20bantuan%20reset%20PIN%206%20angka%20akun%20saya."
+                  href="https://wa.me/6281228009901?text=Assalamu%27alaikum%20Warahmatullahi%20Wabarakatuh%20Ustadz%20Ahmad%20Fauzi%20(Admin%20Provinsi).%20Saya%20petugas%20Maqami,%20mohon%20bantuan%20reset%20PIN%206%20angka%20akun%20saya."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
@@ -670,7 +670,7 @@ export const ResetPinModal: React.FC<ResetPinModalProps> = ({
                 </a>
 
                 <a
-                  href="mailto:admin@masqami.id?subject=Permohonan%20Reset%20PIN%20Petugas%20Maqami&body=Assalamu%27alaikum%20Admin%20Markaz,%20mohon%20bantuan%20reset%20PIN%206%20angka%20akun%20saya."
+                  href="mailto:admin@masqami.id?subject=Permohonan%20Reset%20PIN%20Petugas%20Maqami&body=Assalamu%27alaikum%20Admin%20Provinsi,%20mohon%20bantuan%20reset%20PIN%206%20angka%20akun%20saya."
                   className="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   <Mail className="w-4 h-4 text-teal-400" />

@@ -78,8 +78,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       name: name.trim(),
       email: email.trim(),
       whatsapp: whatsapp.trim() || undefined,
-      role: currentUser.role === 'Admin Markaz' ? role : currentUser.role,
-      wilayah: currentUser.role === 'Admin Markaz' ? wilayah : currentUser.wilayah,
+      role: currentUser.role === 'Admin Provinsi' ? role : currentUser.role,
+      wilayah: currentUser.role === 'Admin Provinsi' ? wilayah : currentUser.wilayah,
       password: password.trim() || currentUser.password || 'bismillah123',
       pin: pin.trim() || currentUser.pin || '123456',
     };
@@ -193,7 +193,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               <label className="text-xs font-semibold text-slate-700">
                 Peran (Hak Akses)
               </label>
-              {currentUser.role !== 'Admin Markaz' && (
+              {currentUser.role !== 'Admin Provinsi' && (
                 <span className="text-[11px] text-slate-500 flex items-center gap-1">
                   <Shield className="w-3 h-3 text-emerald-600" />
                   Ditetapkan oleh Admin
@@ -201,7 +201,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               )}
             </div>
 
-            {currentUser.role === 'Admin Markaz' ? (
+            {currentUser.role === 'Admin Provinsi' ? (
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <Shield className="w-4 h-4" />
@@ -211,7 +211,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   onChange={(e) => setRole(e.target.value as UserRole)}
                   className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
                 >
-                  <option value="Admin Markaz">Admin Markaz (Akses Penuh & Kelola User)</option>
+                  <option value="Admin Provinsi">Admin Provinsi (Akses Penuh & Kelola User)</option>
                   <option value="Petugas Wilayah">Petugas Wilayah (Entri Data Wilayah)</option>
                   <option value="Petugas Halaqoh">Petugas Halaqoh (Entri Data Sub Wilayah)</option>
                   <option value="Khidmat Laporan">Khidmat Laporan (Rekapitulasi & Ekspor)</option>
@@ -241,7 +241,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               Wilayah Tugas
             </label>
-            {currentUser.role === 'Admin Markaz' ? (
+            {currentUser.role === 'Admin Provinsi' ? (
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <MapPin className="w-4 h-4" />

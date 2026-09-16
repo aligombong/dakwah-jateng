@@ -37,6 +37,7 @@ interface UserManagementViewProps {
   onAddUser: (user: UserSession) => void;
   onUpdateUser: (user: UserSession) => void;
   onDeleteUser: (userId: string) => void;
+  onGenerateAllHalaqahAccounts?: () => number;
   initialSubWilayahForAdd?: string;
   onClearInitialSubWilayah?: () => void;
 }
@@ -47,15 +48,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   onAddUser,
   onUpdateUser,
   onDeleteUser,
+  onGenerateAllHalaqahAccounts,
   initialSubWilayahForAdd,
   onClearInitialSubWilayah,
 }) => {
-  const isAdmin = currentUser.role === 'Admin Markaz';
+  const isAdmin = currentUser.role === 'Admin Provinsi';
   const isPetugasWilayah = currentUser.role === 'Petugas Wilayah';
   const currentWilayah = currentUser.wilayah || 'MAGELANG';
 
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [wilayahFilter, setWilayahFilter] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(25);
   const [activeSubTab, setActiveSubTab] = useState<'daftar-user' | 'penugasan-halaqah'>('daftar-user');
 
   // Modal State for Add / Edit
@@ -124,7 +129,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   }, [officersInWilayah]);
 
   // Scoped Users based on authority:
-  // Admin Markaz: all users
+  // Admin Provinsi: all users
   // Petugas Wilayah: users belonging to their assigned wilayah + themselves
   const scopedUsers = useMemo(() => {
     if (isAdmin) return users;
@@ -149,12 +154,29 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
     const matchesRole = roleFilter === 'all' || u.role === roleFilter;
 
-    return matchesSearch && matchesRole;
+    const matchesWilayah =
+      !isAdmin ||
+      wilayahFilter === 'all' ||
+      u.wilayah?.toUpperCase() === wilayahFilter.toUpperCase();
+
+    return matchesSearch && matchesRole && matchesWilayah;
   });
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, roleFilter, wilayahFilter, pageSize]);
+
+  const totalPages = pageSize === -1 ? 1 : Math.ceil(filteredUsers.length / pageSize) || 1;
+  const paginatedUsers = useMemo(() => {
+    if (pageSize === -1) return filteredUsers;
+    const start = (currentPage - 1) * pageSize;
+    return filteredUsers.slice(start, start + pageSize);
+  }, [filteredUsers, currentPage, pageSize]);
 
   // Role Counts for Admin
   const totalUsers = users.length;
-  const adminCount = users.filter((u) => u.role === 'Admin Markaz').length;
+  const adminCount = users.filter((u) => u.role === 'Admin Provinsi').length;
   const petugasCount = users.filter((u) => u.role === 'Petugas Wilayah').length;
   const petugasHalaqahCount = users.filter((u) => u.role === 'Petugas Halaqoh').length;
   const laporanCount = users.filter((u) => u.role === 'Khidmat Laporan').length;
@@ -415,18 +437,32 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           </p>
         </div>
 
-        <button
-          id="btn-tambah-user"
-          onClick={() => handleOpenAddModal()}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-emerald-700/20 transition-all cursor-pointer active:scale-95 shrink-0"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>
-            {isPetugasWilayah
-              ? `+ Tambah Petugas Halaqoh ${currentWilayah}`
-              : 'Tambah Pengguna Baru'}
-          </span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {isAdmin && onGenerateAllHalaqahAccounts && (
+            <button
+              id="btn-sync-151-halaqoh"
+              onClick={() => onGenerateAllHalaqahAccounts()}
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-semibold rounded-xl transition-all cursor-pointer active:scale-95 shadow-xs"
+              title="Buatkan akun untuk seluruh 151 halaqoh yang belum memiliki akun (abaikan yang sudah ada)"
+            >
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <span>Sinkronkan 151 Halaqoh</span>
+            </button>
+          )}
+
+          <button
+            id="btn-tambah-user"
+            onClick={() => handleOpenAddModal()}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-emerald-700/20 transition-all cursor-pointer active:scale-95 shrink-0"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>
+              {isPetugasWilayah
+                ? `+ Tambah Petugas Halaqoh ${currentWilayah}`
+                : 'Tambah Pengguna Baru'}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Metric Cards */}
@@ -495,7 +531,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Admin Markaz</span>
+              <span className="text-xs font-medium text-slate-500">Admin Provinsi</span>
               <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
                 <Shield className="w-3.5 h-3.5" />
               </div>
@@ -717,7 +753,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               />
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <span className="text-xs text-slate-500 whitespace-nowrap">Filter:</span>
               <select
                 value={roleFilter}
@@ -727,7 +763,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 {isAdmin ? (
                   <>
                     <option value="all">Semua Peran ({users.length})</option>
-                    <option value="Admin Markaz">Admin Markaz ({adminCount})</option>
+                    <option value="Admin Provinsi">Admin Provinsi ({adminCount})</option>
                     <option value="Petugas Wilayah">Petugas Wilayah ({petugasCount})</option>
                     <option value="Petugas Halaqoh">Petugas Halaqoh ({petugasHalaqahCount})</option>
                     <option value="Khidmat Laporan">Khidmat Laporan ({laporanCount})</option>
@@ -741,6 +777,21 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   </>
                 )}
               </select>
+
+              {isAdmin && (
+                <select
+                  value={wilayahFilter}
+                  onChange={(e) => setWilayahFilter(e.target.value)}
+                  className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+                >
+                  <option value="all">Semua 10 Wilayah</option>
+                  {WILAYAH_LIST.map((wil) => (
+                    <option key={wil} value={wil}>
+                      Wilayah {wil}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
 
@@ -767,7 +818,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   </td>
                 </tr>
               ) : (
-                filteredUsers.map((user) => {
+                paginatedUsers.map((user) => {
                   const isCurrent = user.id === currentUser.id;
                   const cleanWa = user.whatsapp
                     ? user.whatsapp.replace(/[^0-9]/g, '').replace(/^0/, '62')
@@ -866,10 +917,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
                       {/* Role Badge */}
                       <td className="py-3.5 px-4">
-                        {user.role === 'Admin Markaz' && (
+                        {user.role === 'Admin Provinsi' && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-[11px]">
                             <Shield className="w-3 h-3" />
-                            <span>Admin Markaz</span>
+                            <span>Admin Provinsi</span>
                           </span>
                         )}
                         {user.role === 'Petugas Wilayah' && (
@@ -970,6 +1021,75 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Bar */}
+        {filteredUsers.length > 0 && (
+          <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+            <div className="flex items-center gap-2">
+              <span>
+                Menampilkan{' '}
+                <strong className="text-slate-800">
+                  {pageSize === -1 ? 1 : (currentPage - 1) * pageSize + 1}
+                </strong>{' '}
+                -{' '}
+                <strong className="text-slate-800">
+                  {pageSize === -1
+                    ? filteredUsers.length
+                    : Math.min(currentPage * pageSize, filteredUsers.length)}
+                </strong>{' '}
+                dari <strong className="text-slate-800">{filteredUsers.length}</strong> pengguna
+              </span>
+
+              <div className="hidden sm:flex items-center gap-1.5 ml-4 pl-4 border-l border-slate-200">
+                <span className="text-slate-400 text-[11px]">Per halaman:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                  className="px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                >
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={-1}>Semua ({filteredUsers.length})</option>
+                </select>
+              </div>
+            </div>
+
+            {pageSize !== -1 && totalPages > 1 && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={currentPage <= 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                    currentPage <= 1
+                      ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 cursor-pointer'
+                  }`}
+                >
+                  &larr; Sebelumnya
+                </button>
+
+                <div className="px-2 text-xs font-semibold text-slate-700">
+                  Hal {currentPage} / {totalPages}
+                </div>
+
+                <button
+                  type="button"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                    currentPage >= totalPages
+                      ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 cursor-pointer'
+                  }`}
+                >
+                  Berikutnya &rarr;
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Matriks & Panduan Hak Akses 4 Tingkat */}
@@ -989,12 +1109,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-          {/* Admin Markaz */}
+          {/* Admin Provinsi */}
           <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
-                <h4 className="font-bold text-emerald-950">1. Admin Markaz</h4>
+                <h4 className="font-bold text-emerald-950">1. Admin Provinsi</h4>
               </div>
               <p className="text-slate-600 text-[11px] leading-relaxed mb-3">
                 Tingkat tertinggi pengelola sistem maqami provinsi.
@@ -1259,8 +1379,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     }}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                   >
-                    <option value="Admin Markaz">
-                      Admin Markaz (Akses Penuh Kelola Data & Pengguna)
+                    <option value="Admin Provinsi">
+                      Admin Provinsi (Akses Penuh Kelola Data & Pengguna)
                     </option>
                     <option value="Petugas Wilayah">
                       Petugas Wilayah (Entri & Update Data Wilayah)

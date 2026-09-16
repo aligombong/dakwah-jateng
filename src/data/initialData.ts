@@ -1,4 +1,5 @@
 import { MaqamiRecord, UserSession } from '../types';
+import { generateHalaqahAccounts } from './subWilayahData';
 
 export const WILAYAH_LIST = [
   'MAGELANG',
@@ -25,14 +26,14 @@ export const DAFTAR_PERIODE = [
   { value: '2026-01', label: 'Januari 2026' },
 ];
 
-export const DEFAULT_USERS: UserSession[] = [
+export const BASE_DEFAULT_USERS: UserSession[] = [
   {
     id: 'user-admin',
     name: 'Ustadz Ahmad Fauzi',
     email: 'admin@masqami.id',
     pin: '990001',
     whatsapp: '0812-2800-9901',
-    role: 'Admin Markaz',
+    role: 'Admin Provinsi',
     wilayah: 'Semua Wilayah',
     subWilayah: 'Semua Sub Wilayah',
   },
@@ -76,6 +77,15 @@ export const DEFAULT_USERS: UserSession[] = [
     wilayah: 'PURWOKERTO',
     subWilayah: 'Kotatif',
   },
+];
+
+/**
+ * Daftar Akun Pengguna Bawaan (Termasuk Akun untuk 151 Halaqoh).
+ * Menghasilkan akun unik untuk seluruh 151 halaqah di 10 wilayah (mengabaikan halaqah yang sudah ada akunnya).
+ */
+export const DEFAULT_USERS: UserSession[] = [
+  ...BASE_DEFAULT_USERS,
+  ...generateHalaqahAccounts(BASE_DEFAULT_USERS),
 ];
 
 // September 2026 - Exact dataset provided by the user
