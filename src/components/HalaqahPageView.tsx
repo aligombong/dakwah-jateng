@@ -146,14 +146,16 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
     currentUser.subWilayah?.toLowerCase() === selectedHalaqah.toLowerCase();
 
   const isOwnWilayah =
-    currentUser.role === 'Petugas Wilayah' &&
-    (currentUser.wilayah === 'Semua Wilayah' ||
+    (currentUser.role === 'Petugas Markaz' || currentUser.role === 'Petugas Wilayah') &&
+    (currentUser.wilayah === 'Semua Markaz' ||
+      currentUser.wilayah === 'Semua Wilayah' ||
       currentUser.wilayah?.toUpperCase() === selectedWilayah.toUpperCase());
 
   const canEditCurrentHalaqah = useMemo(() => {
     if (currentUser.role === 'Admin Provinsi') return true;
-    if (currentUser.role === 'Petugas Wilayah') {
+    if (currentUser.role === 'Petugas Markaz' || currentUser.role === 'Petugas Wilayah') {
       return (
+        currentUser.wilayah === 'Semua Markaz' ||
         currentUser.wilayah === 'Semua Wilayah' ||
         currentUser.wilayah?.toUpperCase() === selectedWilayah.toUpperCase()
       );
@@ -169,11 +171,12 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
     return false;
   }, [currentUser, selectedWilayah, selectedHalaqah]);
 
-  // Petugas Wilayah & Admin Provinsi can manage Petugas Halaqoh
+  // Petugas Markaz & Admin Provinsi can manage Petugas Halaqoh
   const canManageHalaqahOfficers = useMemo(() => {
     if (currentUser.role === 'Admin Provinsi') return true;
-    if (currentUser.role === 'Petugas Wilayah') {
+    if (currentUser.role === 'Petugas Markaz' || currentUser.role === 'Petugas Wilayah') {
       return (
+        currentUser.wilayah === 'Semua Markaz' ||
         currentUser.wilayah === 'Semua Wilayah' ||
         currentUser.wilayah?.toUpperCase() === selectedWilayah.toUpperCase()
       );
@@ -457,9 +460,9 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Wilayah & Halaqoh Selectors */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Wilayah Dropdown */}
+            {/* Markaz Dropdown */}
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-slate-500">Wilayah:</span>
+              <span className="text-xs font-semibold text-slate-500">Markaz:</span>
               <select
                 value={selectedWilayah}
                 onChange={(e) => {
@@ -623,7 +626,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h4 className="text-xs font-bold text-amber-950">
-                  Mode Tinjau (Hanya Lihat) — Pembatasan Hak Akses Sub Wilayah
+                  Mode Tinjau (Hanya Lihat) — Pembatasan Hak Akses Halaqoh
                 </h4>
                 <span className="px-2 py-0.5 bg-amber-200 text-amber-900 text-[10px] font-bold rounded-md">
                   Read-Only
@@ -646,7 +649,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             </button>
           )}
         </div>
-      ) : currentUser.role === 'Petugas Wilayah' && !isOwnWilayah ? (
+      ) : (currentUser.role === 'Petugas Markaz' || (currentUser.role as string) === 'Petugas Wilayah') && !isOwnWilayah ? (
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
@@ -655,14 +658,14 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h4 className="text-xs font-bold text-blue-950">
-                  Mode Tinjau Wilayah Lain
+                  Mode Tinjau Markaz Lain
                 </h4>
                 <span className="px-2 py-0.5 bg-blue-200 text-blue-900 text-[10px] font-bold rounded-md">
                   Read-Only
                 </span>
               </div>
               <p className="text-[11px] text-blue-800 mt-0.5">
-                Anda login sebagai <strong>{currentUser.name}</strong> (Petugas Wilayah {currentUser.wilayah}). Lembar halaqoh di Wilayah {selectedWilayah} ini hanya dapat Anda tinjau.
+                Anda login sebagai <strong>{currentUser.name}</strong> (Petugas Markaz {currentUser.wilayah}). Lembar halaqoh di Markaz {selectedWilayah} ini hanya dapat Anda tinjau.
               </p>
             </div>
           </div>
@@ -674,7 +677,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             className="shrink-0 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <MapPin className="w-3.5 h-3.5" />
-            <span>Kembali ke Wilayah {currentUser.wilayah}</span>
+            <span>Kembali ke Markaz {currentUser.wilayah}</span>
           </button>
         </div>
       ) : currentUser.role === 'Khidmat Laporan' ? (
@@ -695,7 +698,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30">
                 <MapPin className="w-3.5 h-3.5" />
-                <span>Halaqoh #{halaqahNo} di Wilayah {selectedWilayah}</span>
+                <span>Halaqoh #{halaqahNo} di Markaz {selectedWilayah}</span>
               </span>
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 text-slate-300 text-xs font-medium">
                 <Calendar className="w-3.5 h-3.5" />
@@ -725,7 +728,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
                 <span>
                   Petugas / PIC:{' '}
                   <strong className="text-white">
-                    {assignedPetugas ? assignedPetugas.name : `Petugas Wilayah ${selectedWilayah}`}
+                    {assignedPetugas ? assignedPetugas.name : `Petugas Markaz ${selectedWilayah}`}
                   </strong>
                 </span>
                 {(assignedPetugas?.email === currentUser.email || isOwnHalaqah) && (
@@ -768,7 +771,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             <div className="mt-3.5 inline-flex items-center gap-2 bg-emerald-950/70 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs text-emerald-200">
               <Layers className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span>
-                Data halaqoh ini otomatis terakumulasi ke dalam total <strong>Wilayah {selectedWilayah}</strong> ({currentSubList.length} halaqoh) dan Markaz Jawa Tengah.
+                Data halaqoh ini otomatis terakumulasi ke dalam total <strong>Markaz {selectedWilayah}</strong> ({currentSubList.length} halaqoh) dan Markaz Jawa Tengah.
               </span>
             </div>
           </div>
@@ -791,8 +794,8 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
                   title={
                     isPetugasHalaqoh
                       ? `Terkunci: Anda bertugas khusus untuk Halaqoh ${currentUser.subWilayah}`
-                      : currentUser.role === 'Petugas Wilayah'
-                      ? `Terkunci: Anda bertugas khusus untuk Wilayah ${currentUser.wilayah}`
+                      : currentUser.role === 'Petugas Markaz' || (currentUser.role as string) === 'Petugas Wilayah'
+                      ? `Terkunci: Anda bertugas khusus untuk Markaz ${currentUser.wilayah}`
                       : 'Terkunci: Akses Khidmat Laporan bersifat Read-Only'
                   }
                 >
@@ -800,8 +803,8 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
                   <span>
                     {isPetugasHalaqoh
                       ? 'Terkunci (Bukan Halaqoh Anda)'
-                      : currentUser.role === 'Petugas Wilayah'
-                      ? 'Terkunci (Bukan Wilayah Anda)'
+                      : currentUser.role === 'Petugas Markaz' || (currentUser.role as string) === 'Petugas Wilayah'
+                      ? 'Terkunci (Bukan Markaz Anda)'
                       : 'Terkunci (Mode Tinjau)'}
                   </span>
                 </button>
@@ -852,7 +855,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
             </span>
             <span className="text-[10px] text-emerald-400 mt-0.5 block">
               {parentTotalKarkun > 0
-                ? `${((totalKarkun / parentTotalKarkun) * 100).toFixed(1)}% dari Wilayah`
+                ? `${((totalKarkun / parentTotalKarkun) * 100).toFixed(1)}% dari Markaz`
                 : ''}
             </span>
           </div>
@@ -902,7 +905,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
                 Tabel Data Maqami: Halaqoh {selectedHalaqah}
               </h2>
               <p className="text-[11px] text-slate-500">
-                Rincian 21 indikator tertib amal dengan perbandingan rata-rata & total Wilayah {selectedWilayah}
+                Rincian 21 indikator tertib amal dengan perbandingan rata-rata & total Markaz {selectedWilayah}
               </p>
             </div>
           </div>
@@ -919,7 +922,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
               onClick={() => onNavigateToTab('laporan-tabel')}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-semibold hover:bg-emerald-100 transition-colors cursor-pointer"
             >
-              <span>Tabel Utama Wilayah</span>
+              <span>Tabel Utama Markaz</span>
               <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
             </button>
           </div>
@@ -940,10 +943,10 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
                   Capaian Halaqoh ({selectedHalaqah})
                 </th>
                 <th className="py-3 px-4 text-right min-w-[130px] border-r border-slate-800 text-slate-300">
-                  Rata-rata Wilayah
+                  Rata-rata Markaz
                 </th>
                 <th className="py-3 px-4 text-right min-w-[130px] border-r border-slate-800 text-slate-300">
-                  Total Wilayah ({selectedWilayah})
+                  Total Markaz ({selectedWilayah})
                 </th>
                 <th className="py-3 px-4 text-right min-w-[110px] border-r border-slate-800">
                   Kontribusi
@@ -1144,7 +1147,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
           <div className="flex items-center gap-2">
             <Info className="w-4 h-4 text-emerald-600" />
             <span>
-              Data halaqoh tersinkronisasi otomatis dengan database lokal dan rekapitulasi Wilayah {selectedWilayah}.
+              Data halaqoh tersinkronisasi otomatis dengan database lokal dan rekapitulasi Markaz {selectedWilayah}.
             </span>
           </div>
           <span className="text-[11px] font-mono text-slate-400">
@@ -1159,7 +1162,7 @@ export const HalaqahPageView: React.FC<HalaqahPageViewProps> = ({
           <div className="flex items-center gap-2">
             <Building2 className="w-4 h-4 text-emerald-600" />
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Daftar Halaqoh Lain di Wilayah {selectedWilayah} ({currentSubList.length} Halaqoh)
+              Daftar Halaqoh Lain di Markaz {selectedWilayah} ({currentSubList.length} Halaqoh)
             </h3>
           </div>
           <span className="text-[11px] text-slate-400">

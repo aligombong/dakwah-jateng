@@ -147,7 +147,7 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Komparasi Antar Wilayah ({periodeLabel})
+              Komparasi Antar Markaz ({periodeLabel})
             </button>
             <button
               onClick={() => setChartView('tren-bulanan')}
@@ -228,13 +228,13 @@ export const TrendCharts: React.FC<TrendChartsProps> = ({
               <BarChart3 className="w-5 h-5 text-emerald-600" />
               <span>
                 {chartView === 'wilayah'
-                  ? `Grafik Batang Per Wilayah: Kategori ${activeCategory.toUpperCase()}`
+                  ? `Grafik Batang Per Markaz: Kategori ${activeCategory.toUpperCase()}`
                   : `Grafik Batang Tren Bulanan: Kategori ${activeCategory.toUpperCase()}`}
               </span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               {chartView === 'wilayah'
-                ? `Visualisasi komparatif data maqami untuk seluruh wilayah Jawa Tengah (${periodeLabel})`
+                ? `Visualisasi komparatif data maqami untuk seluruh markaz Jawa Tengah (${periodeLabel})`
                 : 'Analisis pergerakan volume dakwah dari bulan ke bulan secara komparatif'}
             </p>
           </div>

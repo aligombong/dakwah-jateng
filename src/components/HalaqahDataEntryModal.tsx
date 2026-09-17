@@ -94,7 +94,7 @@ export const HalaqahDataEntryModal: React.FC<HalaqahDataEntryModalProps> = ({
                   Entri Data Maqami Halaqoh: {record.halaqah}
                 </h2>
                 <span className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/30 text-emerald-200 font-semibold">
-                  Wilayah {record.wilayah}
+                  Markaz {record.wilayah}
                 </span>
               </div>
               <p className="text-xs text-slate-300">

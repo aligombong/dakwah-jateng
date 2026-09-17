@@ -53,7 +53,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   onClearInitialSubWilayah,
 }) => {
   const isAdmin = currentUser.role === 'Admin Provinsi';
-  const isPetugasWilayah = currentUser.role === 'Petugas Wilayah';
+  const isPetugasWilayah = currentUser.role === 'Petugas Markaz' || (currentUser.role as string) === 'Petugas Wilayah';
   const currentWilayah = currentUser.wilayah || 'MAGELANG';
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -177,7 +177,9 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   // Role Counts for Admin
   const totalUsers = users.length;
   const adminCount = users.filter((u) => u.role === 'Admin Provinsi').length;
-  const petugasCount = users.filter((u) => u.role === 'Petugas Wilayah').length;
+  const petugasCount = users.filter(
+    (u) => u.role === 'Petugas Markaz' || (u.role as string) === 'Petugas Wilayah'
+  ).length;
   const petugasHalaqahCount = users.filter((u) => u.role === 'Petugas Halaqoh').length;
   const laporanCount = users.filter((u) => u.role === 'Khidmat Laporan').length;
 
@@ -259,7 +261,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       email: user.email,
       whatsapp: user.whatsapp || '',
       role: user.role,
-      wilayah: user.wilayah || (isPetugasWilayah ? currentWilayah : 'Semua Wilayah'),
+      wilayah: user.wilayah || (isPetugasWilayah ? currentWilayah : 'Semua Markaz'),
       subWilayah: user.subWilayah || '',
       password: user.password || '',
       pin: user.pin || generateUniquePin(users, user.id),
@@ -323,26 +325,26 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       return;
     }
 
-    // Role enforcement for Petugas Wilayah
+    // Role enforcement for Petugas Markaz
     if (isPetugasWilayah && (!editingUser || editingUser.id !== currentUser.id)) {
       if (formData.role !== 'Petugas Halaqoh') {
-        setFormError('Sebagai Petugas Wilayah, Anda hanya berwenang mengelola peran Petugas Halaqoh.');
+        setFormError('Sebagai Petugas Markaz, Anda hanya berwenang mengelola peran Petugas Halaqoh.');
         return;
       }
       if (formData.wilayah.toUpperCase() !== currentWilayah.toUpperCase()) {
-        setFormError(`Kewenangan Anda terbatas pada Wilayah ${currentWilayah}.`);
+        setFormError(`Kewenangan Anda terbatas pada Markaz ${currentWilayah}.`);
         return;
       }
     }
 
     // Validate Petugas Halaqoh requirements
     if (formData.role === 'Petugas Halaqoh') {
-      if (!formData.wilayah || formData.wilayah === 'Semua Wilayah') {
-        setFormError('Peran Petugas Halaqoh wajib memilih salah satu Wilayah tugas spesifik.');
+      if (!formData.wilayah || formData.wilayah === 'Semua Wilayah' || formData.wilayah === 'Semua Markaz') {
+        setFormError('Peran Petugas Halaqoh wajib memilih salah satu Markaz tugas spesifik.');
         return;
       }
       if (!formData.subWilayah || !formData.subWilayah.trim()) {
-        setFormError('Peran Petugas Halaqoh wajib memilih Sub Wilayah / Halaqoh yang dibina.');
+        setFormError('Peran Petugas Halaqoh wajib memilih Halaqoh yang dibina.');
         return;
       }
     }
@@ -421,19 +423,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             <Shield className="w-3.5 h-3.5" />
             <span>
               {isPetugasWilayah
-                ? `Kewenangan Wilayah Markaz ${currentWilayah}`
+                ? `Kewenangan Markaz ${currentWilayah}`
                 : 'Otorisasi Hak Akses Markaz'}
             </span>
           </div>
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">
             {isPetugasWilayah
-              ? `Manajemen Petugas Halaqoh Wilayah ${currentWilayah}`
+              ? `Manajemen Petugas Halaqoh Markaz ${currentWilayah}`
               : 'Manajemen Pengguna & Hak Akses'}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             {isPetugasWilayah
               ? `Kelola penugasan, tambahkan akun baru, dan perbarui data kontak Petugas Halaqoh di bawah pembinaan Markaz ${currentWilayah}.`
-              : 'Kelola data akun pengguna, peran akses (Admin, Petugas, Khidmat), dan penugasan wilayah.'}
+              : 'Kelola data akun pengguna, peran akses (Admin, Petugas, Khidmat), dan penugasan markaz.'}
           </p>
         </div>
 
@@ -470,7 +472,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
           <div className="bg-white border border-blue-200 rounded-xl p-4 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Wilayah Binaan</span>
+              <span className="text-xs font-medium text-slate-500">Markaz Binaan</span>
               <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
                 <MapPin className="w-3.5 h-3.5" />
               </div>
@@ -542,13 +544,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">Petugas Wilayah</span>
+              <span className="text-xs font-medium text-slate-500">Petugas Markaz</span>
               <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
                 <MapPin className="w-3.5 h-3.5" />
               </div>
             </div>
             <div className="text-2xl font-bold text-blue-700 mt-2">{petugasCount}</div>
-            <div className="text-[11px] text-blue-600/80 mt-0.5">Entri data wilayah</div>
+            <div className="text-[11px] text-blue-600/80 mt-0.5">Entri data markaz</div>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
@@ -559,7 +561,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </div>
             </div>
             <div className="text-2xl font-bold text-amber-700 mt-2">{petugasHalaqahCount}</div>
-            <div className="text-[11px] text-amber-600/80 mt-0.5">Entri data sub wilayah</div>
+            <div className="text-[11px] text-amber-600/80 mt-0.5">Entri data halaqoh</div>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
@@ -611,7 +613,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
               <h3 className="text-xs font-bold text-slate-800">
-                Daftar & Status Penugasan Seluruh Halaqoh Wilayah {currentWilayah}
+                Daftar & Status Penugasan Seluruh Halaqoh Markaz {currentWilayah}
               </h3>
               <p className="text-[11px] text-slate-500">
                 Pastikan setiap halaqoh memiliki penanggung jawab (PIC) aktif agar entri data maqami bulanan berjalan tertib.
@@ -631,7 +633,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <thead>
                 <tr className="bg-slate-100/70 border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
                   <th className="py-3 px-4 w-16 text-center">No</th>
-                  <th className="py-3 px-4">Nama Sub Wilayah / Halaqoh</th>
+                  <th className="py-3 px-4">Nama Halaqoh</th>
                   <th className="py-3 px-4">Status Penugasan</th>
                   <th className="py-3 px-4">Petugas / PIC Resmi</th>
                   <th className="py-3 px-4">Kontak WhatsApp</th>
@@ -658,7 +660,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           {halaqahName}
                         </span>
                         <div className="text-[10px] text-slate-400">
-                          Wilayah {currentWilayah}
+                          Markaz {currentWilayah}
                         </div>
                       </td>
                       <td className="py-3 px-4">
@@ -687,7 +689,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                           </div>
                         ) : (
                           <span className="text-slate-400 italic text-[11px]">
-                            - Dibina langsung oleh Petugas Wilayah -
+                            - Dibina langsung oleh Petugas Markaz -
                           </span>
                         )}
                       </td>
@@ -764,13 +766,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <>
                     <option value="all">Semua Peran ({users.length})</option>
                     <option value="Admin Provinsi">Admin Provinsi ({adminCount})</option>
-                    <option value="Petugas Wilayah">Petugas Wilayah ({petugasCount})</option>
+                    <option value="Petugas Markaz">Petugas Markaz ({petugasCount})</option>
                     <option value="Petugas Halaqoh">Petugas Halaqoh ({petugasHalaqahCount})</option>
                     <option value="Khidmat Laporan">Khidmat Laporan ({laporanCount})</option>
                   </>
                 ) : (
                   <>
-                    <option value="all">Semua Akun di {currentWilayah} ({scopedUsers.length})</option>
+                    <option value="all">Semua Akun di Markaz {currentWilayah} ({scopedUsers.length})</option>
                     <option value="Petugas Halaqoh">
                       Khusus Petugas Halaqoh ({officersInWilayah.length})
                     </option>
@@ -784,10 +786,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   onChange={(e) => setWilayahFilter(e.target.value)}
                   className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                 >
-                  <option value="all">Semua 10 Wilayah</option>
+                  <option value="all">Semua 10 Markaz</option>
                   {WILAYAH_LIST.map((wil) => (
                     <option key={wil} value={wil}>
-                      Wilayah {wil}
+                      Markaz {wil}
                     </option>
                   ))}
                 </select>
@@ -805,7 +807,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <th className="py-3.5 px-4">WhatsApp</th>
                 <th className="py-3.5 px-4">PIN 6 Angka</th>
                 <th className="py-3.5 px-4">Peran (Hak Akses)</th>
-                <th className="py-3.5 px-4">Wilayah Tugas</th>
+                <th className="py-3.5 px-4">Markaz Tugas</th>
                 <th className="py-3.5 px-4">Status & Dibuat</th>
                 <th className="py-3.5 px-4 text-right">Aksi</th>
               </tr>
@@ -923,10 +925,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                             <span>Admin Provinsi</span>
                           </span>
                         )}
-                        {user.role === 'Petugas Wilayah' && (
+                        {(user.role === 'Petugas Markaz' || (user.role as string) === 'Petugas Wilayah') && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200 font-semibold text-[11px]">
                             <MapPin className="w-3 h-3" />
-                            <span>Petugas Wilayah</span>
+                            <span>Petugas Markaz</span>
                           </span>
                         )}
                         {user.role === 'Petugas Halaqoh' && (
@@ -947,7 +949,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col items-start gap-1">
                           <span className="font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md text-[11px]">
-                            {user.wilayah || 'Semua Wilayah'}
+                            {user.wilayah || 'Semua Markaz'}
                           </span>
                           {user.subWilayah && (
                             <span className="inline-flex items-center gap-1 text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">
@@ -1103,7 +1105,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               Matriks Tingkat Hak Akses & Kewenangan Pengguna
             </h3>
             <p className="text-[11px] text-slate-500">
-              Struktur perizinan data maqami dakwah dari tingkat Markaz, Wilayah, hingga Sub Wilayah (Halaqoh)
+              Struktur perizinan data maqami dakwah dari tingkat Provinsi, Markaz, hingga Halaqoh
             </p>
           </div>
         </div>
@@ -1122,11 +1124,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               <ul className="space-y-1.5 text-[11px] text-slate-700">
                 <li className="flex items-start gap-1.5">
                   <span className="text-emerald-600 font-bold">&check;</span>
-                  <span>Akses seluruh 10 Wilayah & 151 Halaqoh</span>
+                  <span>Akses seluruh 10 Markaz & 151 Halaqoh</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-emerald-600 font-bold">&check;</span>
-                  <span>Kelola akun, peran, & wilayah petugas</span>
+                  <span>Kelola akun, peran, & markaz petugas</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-emerald-600 font-bold">&check;</span>
@@ -1139,37 +1141,37 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
             </div>
           </div>
 
-          {/* Petugas Wilayah */}
+          {/* Petugas Markaz */}
           <div className="p-3.5 rounded-xl border border-blue-200 bg-blue-50/40 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                <h4 className="font-bold text-blue-950">2. Petugas Wilayah</h4>
+                <h4 className="font-bold text-blue-950">2. Petugas Markaz</h4>
               </div>
               <p className="text-slate-600 text-[11px] leading-relaxed mb-3">
-                Penanggung jawab data maqami pada tingkat kabupaten/kota.
+                Penanggung jawab data maqami pada tingkat markaz daerah.
               </p>
               <ul className="space-y-1.5 text-[11px] text-slate-700">
                 <li className="flex items-start gap-1.5">
                   <span className="text-blue-600 font-bold">&check;</span>
-                  <span>Entri data agregat wilayah binaan</span>
+                  <span>Entri data agregat markaz binaan</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-blue-600 font-bold">&check;</span>
-                  <span>Kelola & update seluruh halaqoh di wilayahnya</span>
+                  <span>Kelola & update seluruh halaqoh di markaznya</span>
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="text-slate-400 font-bold">&bull;</span>
-                  <span>Melihat rekapitulasi perbandingan wilayah lain</span>
+                  <span>Melihat rekapitulasi perbandingan markaz lain</span>
                 </li>
               </ul>
             </div>
             <div className="mt-3 pt-2 border-t border-blue-200/60 text-[10px] font-semibold text-blue-800">
-              Cakupan: 1 Wilayah & Halaqoh di dalamnya
+              Cakupan: 1 Markaz & Halaqoh di dalamnya
             </div>
           </div>
 
-          {/* Petugas Halaqoh (Sub Wilayah) */}
+          {/* Petugas Halaqoh */}
           <div className="p-3.5 rounded-xl border border-amber-300 bg-amber-50/50 flex flex-col justify-between shadow-xs ring-1 ring-amber-400/20">
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -1178,7 +1180,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <h4 className="font-bold text-amber-950">3. Petugas Halaqoh</h4>
                 </div>
                 <span className="px-1.5 py-0.2 text-[9px] font-bold bg-amber-200 text-amber-900 rounded">
-                  Sub Wilayah
+                  Halaqoh
                 </span>
               </div>
               <p className="text-slate-600 text-[11px] leading-relaxed mb-3">
@@ -1200,7 +1202,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
               </ul>
             </div>
             <div className="mt-3 pt-2 border-t border-amber-200/60 text-[10px] font-semibold text-amber-900">
-              Cakupan: 1 Sub Wilayah (Halaqoh) Binaan
+              Cakupan: 1 Halaqoh Binaan
             </div>
           </div>
 
@@ -1257,14 +1259,14 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     {editingUser
                       ? `Edit Data ${editingUser.name}`
                       : isPetugasWilayah
-                      ? `Tambah Petugas Halaqoh ${currentWilayah}`
+                      ? `Tambah Petugas Halaqoh Markaz ${currentWilayah}`
                       : 'Tambah Pengguna Baru'}
                   </h3>
                   <p className="text-[11px] text-slate-300">
                     {editingUser
-                      ? 'Perbarui nama, email, peran, atau penugasan wilayah'
+                      ? 'Perbarui nama, email, peran, atau penugasan markaz'
                       : isPetugasWilayah
-                      ? `Buat akun login untuk penanggung jawab halaqoh di ${currentWilayah}`
+                      ? `Buat akun login untuk penanggung jawab halaqoh di Markaz ${currentWilayah}`
                       : 'Buat akun pengguna baru dan tentukan hak aksesnya'}
                   </p>
                 </div>
@@ -1348,11 +1350,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                         <span className="font-bold text-xs text-amber-950">Petugas Halaqoh</span>
                       </div>
                       <span className="text-[10px] bg-amber-200/80 text-amber-900 font-bold px-2 py-0.5 rounded">
-                        Sub Wilayah
+                        Halaqoh
                       </span>
                     </div>
                     <p className="text-[11px] text-amber-800 mt-1">
-                      Kewenangan Anda sebagai Petugas Wilayah adalah mengelola Petugas Halaqoh binaan.
+                      Kewenangan Anda sebagai Petugas Markaz adalah mengelola Petugas Halaqoh binaan.
                     </p>
                   </div>
                 ) : (
@@ -1363,7 +1365,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                       let newWil = formData.wilayah;
                       let newSub = formData.subWilayah;
                       if (newRole === 'Petugas Halaqoh') {
-                        if (!newWil || newWil === 'Semua Wilayah') {
+                        if (!newWil || newWil === 'Semua Markaz' || newWil === 'Semua Wilayah') {
                           newWil = isPetugasWilayah ? currentWilayah : 'MAGELANG';
                           newSub = getSubWilayahList(newWil)[0] || '';
                         } else if (!newSub) {
@@ -1382,11 +1384,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     <option value="Admin Provinsi">
                       Admin Provinsi (Akses Penuh Kelola Data & Pengguna)
                     </option>
-                    <option value="Petugas Wilayah">
-                      Petugas Wilayah (Entri & Update Data Wilayah)
+                    <option value="Petugas Markaz">
+                      Petugas Markaz (Entri & Update Data Markaz)
                     </option>
                     <option value="Petugas Halaqoh">
-                      Petugas Halaqoh (Entri & Update Data Sub Wilayah / Halaqoh Binaan)
+                      Petugas Halaqoh (Entri & Update Data Halaqoh Binaan)
                     </option>
                     <option value="Khidmat Laporan">
                       Khidmat Laporan (Melihat Rekapitulasi & Ekspor Laporan)
@@ -1398,25 +1400,25 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-start gap-2">
                     <MapPin className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <strong>Tingkat Hak Akses Sub Wilayah (Halaqoh):</strong> Pengguna dengan peran ini berfokus menginput, memperbarui, dan mengevaluasi data lembar maqami khusus 1 halaqoh yang dibinanya.
+                      <strong>Tingkat Hak Akses Halaqoh:</strong> Pengguna dengan peran ini berfokus menginput, memperbarui, dan mengevaluasi data lembar maqami khusus 1 halaqoh yang dibinanya.
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Wilayah Tugas */}
+              {/* Markaz Tugas */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Wilayah Tugas / Binaan <span className="text-rose-500">*</span>
+                  Markaz Tugas / Binaan <span className="text-rose-500">*</span>
                 </label>
                 {isPetugasWilayah && (!editingUser || editingUser.id !== currentUser.id) ? (
                   <div className="flex items-center justify-between p-2.5 bg-blue-50 border border-blue-200 rounded-xl text-xs">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-blue-600" />
-                      <span className="font-bold text-blue-950">Wilayah {currentWilayah}</span>
+                      <span className="font-bold text-blue-950">Markaz {currentWilayah}</span>
                     </div>
                     <span className="text-[10px] font-semibold text-blue-800 bg-blue-200/70 px-2 py-0.5 rounded">
-                      Wilayah Anda
+                      Markaz Anda
                     </span>
                   </div>
                 ) : (
@@ -1440,7 +1442,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                   >
                     {formData.role !== 'Petugas Halaqoh' && (
-                      <option value="Semua Wilayah">Semua Wilayah (Jawa Tengah & DIY)</option>
+                      <option value="Semua Markaz">Semua Markaz (Jawa Tengah & DIY)</option>
                     )}
                     {WILAYAH_LIST.map((wil) => (
                       <option key={wil} value={wil}>
@@ -1451,12 +1453,12 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 )}
               </div>
 
-              {/* Sub Wilayah / Halaqoh Tugas (Khusus per wilayah) */}
-              {formData.wilayah !== 'Semua Wilayah' && (
+              {/* Halaqoh Tugas (Khusus per markaz) */}
+              {formData.wilayah !== 'Semua Markaz' && formData.wilayah !== 'Semua Wilayah' && (
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-semibold text-slate-700">
-                      Sub Wilayah / Halaqoh Tugas {formData.role === 'Petugas Halaqoh' ? <span className="text-rose-500">* (Wajib)</span> : '(Opsional)'}
+                      Halaqoh Tugas {formData.role === 'Petugas Halaqoh' ? <span className="text-rose-500">* (Wajib)</span> : '(Opsional)'}
                     </label>
                     <span className="text-[10px] text-emerald-700 font-medium">
                       {getSubWilayahList(formData.wilayah).length} Halaqoh tersedia
@@ -1470,7 +1472,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                   >
                     {formData.role !== 'Petugas Halaqoh' && (
-                      <option value="">-- Seluruh Wilayah {formData.wilayah} (Tanpa batasan Halaqoh) --</option>
+                      <option value="">-- Seluruh Markaz {formData.wilayah} (Tanpa batasan Halaqoh) --</option>
                     )}
                     {getSubWilayahList(formData.wilayah).map((sub, idx) => {
                       const currentAssignee = halaqahOfficerMap.get(sub.toLowerCase());
@@ -1638,7 +1640,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                 <span className="font-bold text-white">{userForResetPin.name}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Peran & Wilayah:</span>
+                <span className="text-slate-400">Peran & Markaz:</span>
                 <span className="text-emerald-300">
                   {userForResetPin.role} ({userForResetPin.wilayah})
                 </span>

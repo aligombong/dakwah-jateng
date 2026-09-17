@@ -47,7 +47,13 @@ export default function App() {
           // Buatkan akun untuk 151 halaqah (abaikan jika halaqah sudah memiliki akun di parsed)
           const cleanParsed = parsed.map((u: any) => ({
             ...u,
-            role: u.role === 'Admin Markaz' ? 'Admin Provinsi' : u.role,
+            role:
+              u.role === 'Admin Markaz'
+                ? 'Admin Provinsi'
+                : u.role === 'Petugas Wilayah'
+                ? 'Petugas Markaz'
+                : u.role,
+            wilayah: u.wilayah === 'Semua Wilayah' ? 'Semua Markaz' : u.wilayah,
           }));
           const newHalaqahAccounts = generateHalaqahAccounts(cleanParsed);
 
@@ -64,7 +70,13 @@ export default function App() {
             );
             return {
               ...u,
-              role: (u.role as string) === 'Admin Markaz' ? 'Admin Provinsi' : u.role,
+              role:
+                (u.role as string) === 'Admin Markaz'
+                  ? 'Admin Provinsi'
+                  : (u.role as string) === 'Petugas Wilayah'
+                  ? 'Petugas Markaz'
+                  : u.role,
+              wilayah: u.wilayah === 'Semua Wilayah' ? 'Semua Markaz' : u.wilayah,
               whatsapp: u.whatsapp || matchedDefault?.whatsapp || '0812-3456-7890',
               pin: u.pin || matchedDefault?.pin || '990001',
             };
@@ -209,14 +221,19 @@ export default function App() {
   const handleLogin = (newUser: UserSession) => {
     setUser(newUser);
     if (newUser.role === 'Petugas Halaqoh') {
-      if (newUser.wilayah && newUser.wilayah !== 'Semua Wilayah') {
+      if (newUser.wilayah && newUser.wilayah !== 'Semua Markaz' && newUser.wilayah !== 'Semua Wilayah') {
         setSelectedHalaqahWilayah(newUser.wilayah);
       }
       if (newUser.subWilayah) {
         setSelectedHalaqahName(newUser.subWilayah);
       }
       setActiveTab('lembar-halaqah');
-    } else if (newUser.role === 'Petugas Wilayah' && newUser.wilayah && newUser.wilayah !== 'Semua Wilayah') {
+    } else if (
+      (newUser.role === 'Petugas Markaz' || (newUser.role as string) === 'Petugas Wilayah') &&
+      newUser.wilayah &&
+      newUser.wilayah !== 'Semua Markaz' &&
+      newUser.wilayah !== 'Semua Wilayah'
+    ) {
       setSelectedHalaqahWilayah(newUser.wilayah);
       const subs = getSubWilayahList(newUser.wilayah);
       if (subs.length > 0) {
@@ -530,7 +547,7 @@ export default function App() {
         )}
 
         {activeTab === 'manajemen-user' && (
-          (user.role === 'Admin Provinsi' || user.role === 'Petugas Wilayah') ? (
+          (user.role === 'Admin Provinsi' || user.role === 'Petugas Markaz' || (user.role as string) === 'Petugas Wilayah') ? (
             <UserManagementView
               users={users}
               currentUser={user}
@@ -548,7 +565,7 @@ export default function App() {
               </div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Akses Terbatas</h3>
               <p className="text-xs text-slate-500 leading-relaxed mb-6">
-                Halaman Manajemen Pengguna dikhususkan untuk <strong>Admin Provinsi</strong> dan <strong>Petugas Wilayah</strong> untuk mengelola otorisasi dan penugasan Petugas Halaqoh.
+                Halaman Manajemen Pengguna dikhususkan untuk <strong>Admin Provinsi</strong> dan <strong>Petugas Markaz</strong> untuk mengelola otorisasi dan penugasan Petugas Halaqoh.
               </p>
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left text-xs mb-6">
                 <div className="font-semibold text-slate-800 mb-1">Status Akun Anda Saat Ini:</div>
@@ -559,7 +576,7 @@ export default function App() {
                   <span>Email: <strong>{user.email}</strong></span>
                 </div>
                 <div className="text-slate-600 flex items-center gap-1.5 mt-1">
-                  <span>Peran: <strong className="text-emerald-700">{user.role}</strong> ({user.wilayah || 'Semua Wilayah'})</span>
+                  <span>Peran: <strong className="text-emerald-700">{user.role}</strong> ({user.wilayah || 'Semua Markaz'})</span>
                 </div>
               </div>
               <button

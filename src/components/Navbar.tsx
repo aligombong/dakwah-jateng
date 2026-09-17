@@ -181,7 +181,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <TableProperties className="w-3.5 h-3.5" />
-            <span>Matriks 10 Wilayah</span>
+            <span>Matriks 10 Markaz</span>
           </button>
 
           <button
@@ -210,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Daftar 151 Halaqoh</span>
+            <span>Direktori 10 Markaz & 151 Halaqoh</span>
           </button>
 
           <button
@@ -239,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Ringkasan Eksekutif</span>
           </button>
 
-          {/* User Management Tab (Accessible for Admin Provinsi and Petugas Wilayah) */}
+          {/* User Management Tab (Accessible for Admin Provinsi and Petugas Markaz) */}
           <button
             id="tab-manajemen-user"
             onClick={() => setActiveTab('manajemen-user')}
@@ -251,13 +251,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Users className="w-3.5 h-3.5 text-emerald-400" />
             <span>
-              {user.role === 'Petugas Wilayah' ? 'Kelola Petugas Halaqoh' : 'Kelola Pengguna'}
+              {user.role === 'Petugas Markaz' || (user.role as string) === 'Petugas Wilayah'
+                ? 'Kelola Petugas Halaqoh'
+                : 'Kelola Pengguna'}
             </span>
             {user.role === 'Admin Provinsi' ? (
               <span className="text-[10px] bg-emerald-600/40 text-emerald-100 px-1.5 py-0.2 rounded font-mono font-medium">
                 Admin
               </span>
-            ) : user.role === 'Petugas Wilayah' ? (
+            ) : user.role === 'Petugas Markaz' || (user.role as string) === 'Petugas Wilayah' ? (
               <span className="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded font-mono font-bold">
                 Halaqoh
               </span>

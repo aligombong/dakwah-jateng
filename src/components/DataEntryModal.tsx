@@ -195,7 +195,7 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
         <div className="p-4 bg-slate-100/70 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Pilih Wilayah / Halaqah:
+              Pilih Markaz:
             </label>
             <select
               value={wilayah}
@@ -233,7 +233,7 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
           <div className="flex items-center gap-2 text-emerald-900">
             <Layers className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>
-              Wilayah <strong>{wilayah}</strong> membina <strong>{getSubWilayahCount(wilayah)} halaqoh</strong>. Data wilayah ini merupakan gabungan dari halaqoh-halaqoh tersebut.
+              Markaz <strong>{wilayah}</strong> membina <strong>{getSubWilayahCount(wilayah)} halaqoh</strong>. Data markaz ini merupakan gabungan dari halaqoh-halaqoh tersebut.
             </span>
           </div>
           {onOpenHalaqahPage && (
@@ -335,10 +335,10 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
                         <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
                         <div>
                           <span className="text-xs font-bold text-emerald-950">
-                            Master Sub Wilayah: {wilayah}
+                            Daftar Halaqoh Resmi Markaz {wilayah}
                           </span>
                           <p className="text-[11px] text-emerald-800">
-                            Tercatat resmi <strong>{masterCount} Halaqoh</strong> di wilayah ini
+                            Tercatat resmi <strong>{masterCount} Halaqoh</strong> di markaz ini
                           </p>
                         </div>
                       </div>
@@ -473,7 +473,7 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Jumlah Seluruh Masjid / Mushalla di Wilayah
+                  Jumlah Seluruh Masjid / Mushalla di Markaz
                 </label>
                 <input
                   type="number"

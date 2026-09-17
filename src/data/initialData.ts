@@ -14,6 +14,8 @@ export const WILAYAH_LIST = [
   'YOGYAKARTA',
 ];
 
+export const MARKAZ_LIST = WILAYAH_LIST;
+
 export const DAFTAR_PERIODE = [
   { value: '2026-09', label: 'September 2026' },
   { value: '2026-08', label: 'Agustus 2026' },
@@ -34,8 +36,8 @@ export const BASE_DEFAULT_USERS: UserSession[] = [
     pin: '990001',
     whatsapp: '0812-2800-9901',
     role: 'Admin Provinsi',
-    wilayah: 'Semua Wilayah',
-    subWilayah: 'Semua Sub Wilayah',
+    wilayah: 'Semua Markaz',
+    subWilayah: 'Semua Halaqoh',
   },
   {
     id: 'user-solo',
@@ -43,7 +45,7 @@ export const BASE_DEFAULT_USERS: UserSession[] = [
     email: 'solo@masqami.id',
     pin: '223344',
     whatsapp: '0813-2911-4422',
-    role: 'Petugas Wilayah',
+    role: 'Petugas Markaz',
     wilayah: 'SOLO',
     subWilayah: 'Serengan',
   },

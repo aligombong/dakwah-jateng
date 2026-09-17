@@ -39,7 +39,7 @@ export interface MaqamiRecord {
   updatedBy?: string;
 }
 
-export type UserRole = 'Admin Provinsi' | 'Petugas Wilayah' | 'Petugas Halaqoh' | 'Khidmat Laporan';
+export type UserRole = 'Admin Provinsi' | 'Petugas Markaz' | 'Petugas Halaqoh' | 'Khidmat Laporan';
 
 export interface HalaqahMaqamiRecord {
   id: string; // e.g. "hal-2026-09-MAGELANG-Mungkid"

@@ -74,7 +74,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
   };
 
   const handleExportCSV = () => {
-    const headers = ['No', 'No di Wilayah', 'Wilayah', 'Nama Sub Wilayah / Halaqoh'];
+    const headers = ['No', 'No di Markaz', 'Markaz', 'Nama Halaqoh'];
     const rows = filteredItems.map((item, idx) => [
       idx + 1,
       item.no,
@@ -87,7 +87,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Daftar_151_Sub_Wilayah_Halaqoh_${selectedWilayah}.csv`);
+    link.setAttribute('download', `Daftar_151_Halaqoh_${selectedWilayah}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -108,10 +108,10 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
               <span>Struktur Kewilayahan & Halaqoh Resmi</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Direktori 151 Sub Wilayah & Halaqoh
+              Direktori 151 Halaqoh
             </h2>
             <p className="text-sm text-slate-300 mt-2 leading-relaxed">
-              Integrasi lengkap 151 Halaqoh dakwah yang terdistribusi di 10 Wilayah Markaz se-Jawa Tengah & D.I. Yogyakarta untuk koordinasi pelaporan dan monitoring maqami.
+              Integrasi lengkap 151 Halaqoh dakwah yang terdistribusi di 10 Markaz se-Jawa Tengah & D.I. Yogyakarta untuk koordinasi pelaporan dan monitoring maqami.
             </p>
           </div>
 
@@ -127,7 +127,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
               <div className="text-2xl sm:text-3xl font-extrabold text-teal-300 font-mono">
                 {formatNumberIndo(WILAYAH_LIST.length)}
               </div>
-              <div className="text-[11px] text-slate-300 font-medium mt-0.5">Wilayah Markaz</div>
+              <div className="text-[11px] text-slate-300 font-medium mt-0.5">Markaz</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3.5 text-center col-span-2 sm:col-span-1">
               <div className="text-2xl sm:text-3xl font-extrabold text-amber-300 font-mono">
@@ -151,7 +151,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Cari nama halaqoh / sub wilayah..."
+              placeholder="Cari nama halaqoh..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
             />
             {searchTerm && (
@@ -176,7 +176,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Kartu Wilayah
+                Kartu Markaz
               </button>
               <button
                 onClick={() => setViewMode('table')}
@@ -211,7 +211,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            Semua Wilayah ({formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)})
+            Semua Markaz ({formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)})
           </button>
           {WILAYAH_LIST.map((wil) => {
             const count = SUB_WILAYAH_DATA[wil]?.length || 0;
@@ -383,9 +383,9 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
                   <th className="py-3 px-4 w-16 text-center">No</th>
-                  <th className="py-3 px-4 w-28">No di Wilayah</th>
-                  <th className="py-3 px-4">Wilayah Markaz</th>
-                  <th className="py-3 px-4">Nama Sub Wilayah / Halaqoh</th>
+                  <th className="py-3 px-4 w-28">No di Markaz</th>
+                  <th className="py-3 px-4">Markaz</th>
+                  <th className="py-3 px-4">Nama Halaqoh</th>
                   <th className="py-3 px-4 w-32 text-right">Aksi</th>
                 </tr>
               </thead>
@@ -480,7 +480,7 @@ export const SubWilayahView: React.FC<SubWilayahViewProps> = ({
           </div>
           <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 text-xs text-slate-500 flex items-center justify-between">
             <span>
-              Menampilkan {formatNumberIndo(filteredItems.length)} dari {formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)} Sub Wilayah / Halaqoh
+              Menampilkan {formatNumberIndo(filteredItems.length)} dari {formatNumberIndo(TOTAL_SUB_WILAYAH_COUNT)} Halaqoh
             </span>
             <span className="font-mono text-[11px]">Jawa Tengah & D.I. Yogyakarta</span>
           </div>

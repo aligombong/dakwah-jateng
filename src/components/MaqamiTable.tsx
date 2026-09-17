@@ -246,11 +246,11 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
           </h2>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs">
             <p className="text-slate-500">
-              Periode Laporan: <strong className="text-slate-700">{periodeLabel}</strong> &bull; Total 10 Wilayah
+              Periode Laporan: <strong className="text-slate-700">{periodeLabel}</strong> &bull; Total 10 Markaz
             </p>
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 text-[11px]">
               <Layers className="w-3 h-3 text-emerald-600" />
-              Data wilayah diperoleh dari gabungan 151 data halaqoh
+              Data markaz diperoleh dari gabungan 151 data halaqoh
             </span>
           </div>
         </div>
@@ -261,7 +261,7 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
             onClick={() =>
               setHalaqahModal({
                 wilayah: 'ALL',
-                title: `151 Sub Wilayah / Halaqoh Dakwah (10 Wilayah Markaz)`,
+                title: `151 Halaqoh Dakwah (10 Markaz)`,
                 items: Object.entries(SUB_WILAYAH_DATA).flatMap(([w, list]) =>
                   list.map((name, i) => `${w}: #${i + 1} ${name}`)
                 ),
@@ -322,7 +322,7 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                         onClick={() =>
                           setHalaqahModal({
                             wilayah: wil,
-                            title: `Gabungan ${count} Halaqoh Wilayah ${wil}`,
+                            title: `Gabungan ${count} Halaqoh Markaz ${wil}`,
                             items: SUB_WILAYAH_DATA[wil] || [],
                           })
                         }
@@ -411,7 +411,7 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                             onClick={() =>
                               setHalaqahModal({
                                 wilayah: wil,
-                                title: `${halaqahList.length} Sub Wilayah / Halaqoh (${wil})`,
+                                title: `${halaqahList.length} Halaqoh (Markaz ${wil})`,
                                 items: halaqahList,
                               })
                             }
@@ -445,7 +445,7 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                         onClick={() =>
                           setHalaqahModal({
                             wilayah: 'ALL',
-                            title: `Total 151 Sub Wilayah / Halaqoh (10 Wilayah Markaz)`,
+                            title: `Total 151 Halaqoh (10 Markaz)`,
                             items: Object.entries(SUB_WILAYAH_DATA).flatMap(([w, list]) =>
                               list.map((name, i) => `${w}: #${i + 1} ${name}`)
                             ),
@@ -545,7 +545,7 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                         <div className="min-w-0">
                           <div className="font-semibold text-xs text-slate-900 truncate">{cleanName}</div>
                           <div className="text-[10px] text-slate-500">
-                            Wilayah {halRec?.wilayah || itemWilayah}
+                            Markaz {halRec?.wilayah || itemWilayah}
                           </div>
                         </div>
                       </div>

@@ -180,7 +180,7 @@ export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
           </div>
         </div>
 
-        {/* Peringkat Wilayah (Karkun) */}
+        {/* Peringkat Markaz (Karkun) */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
@@ -189,9 +189,9 @@ export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
               </div>
               <div>
                 <h3 className="text-sm font-bold text-slate-900">
-                  Persebaran Kekuatan Karkun per Wilayah
+                  Persebaran Kekuatan Karkun per Markaz
                 </h3>
-                <p className="text-[11px] text-slate-500">Urutan wilayah berdasarkan total karkun</p>
+                <p className="text-[11px] text-slate-500">Urutan markaz berdasarkan total karkun</p>
               </div>
             </div>
           </div>
@@ -241,7 +241,7 @@ export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900">
-                Distribusi 151 Sub Wilayah (Halaqoh) di 10 Wilayah Markaz
+                Distribusi 151 Halaqoh di 10 Markaz
               </h3>
               <p className="text-[11px] text-slate-500">
                 Pondasi basis unit halaqoh dakwah di seluruh Jawa Tengah & D.I. Yogyakarta

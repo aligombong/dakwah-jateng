@@ -454,7 +454,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                             {u.subWilayah}
                           </div>
                           <div className="text-[10px] text-slate-500">
-                            Wilayah {u.wilayah} &bull; {u.email}
+                            Markaz {u.wilayah} &bull; {u.email}
                           </div>
                         </div>
                         <div className="shrink-0 text-right">
@@ -472,7 +472,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
         {/* Footer info */}
         <div className="text-center mt-5 text-[11px] text-slate-500">
-          <span>Hak Akses Terdistribusi: Admin Provinsi &bull; Petugas Wilayah &bull; Petugas Halaqoh &bull; Khidmat Laporan</span>
+          <span>Hak Akses Terdistribusi: Admin Provinsi &bull; Petugas Markaz &bull; Petugas Halaqoh &bull; Khidmat Laporan</span>
         </div>
       </div>
 

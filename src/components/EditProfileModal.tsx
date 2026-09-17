@@ -34,7 +34,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [email, setEmail] = useState(currentUser.email);
   const [whatsapp, setWhatsapp] = useState(currentUser.whatsapp || '');
   const [role, setRole] = useState<UserRole>(currentUser.role);
-  const [wilayah, setWilayah] = useState(currentUser.wilayah || 'Semua Wilayah');
+  const [wilayah, setWilayah] = useState(currentUser.wilayah || 'Semua Markaz');
   const [password, setPassword] = useState(currentUser.password || '');
   const [pin, setPin] = useState(currentUser.pin || '');
   const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +46,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       setEmail(currentUser.email);
       setWhatsapp(currentUser.whatsapp || '');
       setRole(currentUser.role);
-      setWilayah(currentUser.wilayah || 'Semua Wilayah');
+      setWilayah(currentUser.wilayah || 'Semua Markaz');
       setPassword(currentUser.password || '');
       setPin(currentUser.pin || '');
       setError('');
@@ -212,8 +212,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
                 >
                   <option value="Admin Provinsi">Admin Provinsi (Akses Penuh & Kelola User)</option>
-                  <option value="Petugas Wilayah">Petugas Wilayah (Entri Data Wilayah)</option>
-                  <option value="Petugas Halaqoh">Petugas Halaqoh (Entri Data Sub Wilayah)</option>
+                  <option value="Petugas Markaz">Petugas Markaz (Entri Data Markaz)</option>
+                  <option value="Petugas Halaqoh">Petugas Halaqoh (Entri Data Halaqoh)</option>
                   <option value="Khidmat Laporan">Khidmat Laporan (Rekapitulasi & Ekspor)</option>
                 </select>
               </div>
@@ -226,8 +226,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   <span className="text-sm font-semibold text-slate-800">{currentUser.role}</span>
                 </div>
                 <span className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
-                  {currentUser.role === 'Petugas Wilayah'
-                    ? 'Akses Entri Wilayah'
+                  {currentUser.role === 'Petugas Markaz' || (currentUser.role as string) === 'Petugas Wilayah'
+                    ? 'Akses Entri Markaz'
                     : currentUser.role === 'Petugas Halaqoh'
                     ? 'Akses Entri Halaqoh'
                     : 'Akses Tinjauan & Laporan'}
@@ -236,10 +236,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             )}
           </div>
 
-          {/* Wilayah Tugas */}
+          {/* Markaz Tugas */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Wilayah Tugas
+              Markaz Tugas
             </label>
             {currentUser.role === 'Admin Provinsi' ? (
               <div className="relative">
@@ -251,7 +251,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   onChange={(e) => setWilayah(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
                 >
-                  <option value="Semua Wilayah">Semua Wilayah (Jawa Tengah & DIY)</option>
+                  <option value="Semua Markaz">Semua Markaz (Jawa Tengah & DIY)</option>
                   {WILAYAH_LIST.map((wil) => (
                     <option key={wil} value={wil}>
                       {wil}
@@ -263,7 +263,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-800">
                   <MapPin className="w-4 h-4 text-slate-400" />
-                  <span className="font-semibold">{currentUser.wilayah || 'Semua Wilayah'}</span>
+                  <span className="font-semibold">{currentUser.wilayah || 'Semua Markaz'}</span>
                 </div>
                 {currentUser.subWilayah && (
                   <div className="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
