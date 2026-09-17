@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserSession, MaqamiRecord, HalaqahMaqamiRecord, ViewTab } from './types';
-import { WILAYAH_LIST, DAFTAR_PERIODE, DEFAULT_USERS, BASE_DEFAULT_USERS, generateInitialData, getPreviousPeriode } from './data/initialData';
+import { WILAYAH_LIST, DAFTAR_PERIODE, DEFAULT_USERS, BASE_DEFAULT_USERS, generateInitialData } from './data/initialData';
 import { calculateSummary } from './utils/calculations';
 import { exportMaqamiToExcel } from './utils/exportExcel';
 import { exportMaqamiToPdf } from './utils/exportPdf';
@@ -309,14 +309,6 @@ export default function App() {
   const currentPeriodeLabel = periodObj ? periodObj.label : selectedPeriode;
   const currentSummary = calculateSummary(currentMonthRecords);
 
-  // Previous period records & summary for comparative trend analysis (delta)
-  const previousPeriodObj = getPreviousPeriode(selectedPeriode);
-  const previousMonthRecords = previousPeriodObj
-    ? records.filter((r) => r.periode === previousPeriodObj.value)
-    : [];
-  const previousSummary = previousMonthRecords.length > 0 ? calculateSummary(previousMonthRecords) : undefined;
-  const previousPeriodeLabel = previousPeriodObj?.shortLabel || previousPeriodObj?.label;
-
   const handleOpenDataEntryForRegion = (wil: string) => {
     setEditingWilayah(wil);
     setIsEntryModalOpen(true);
@@ -492,12 +484,7 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Stat Summary Cards - shown on data reports */}
         {activeTab !== 'manajemen-user' && (
-          <StatSummaryCards
-            summary={currentSummary}
-            periodeLabel={currentPeriodeLabel}
-            previousSummary={previousSummary}
-            previousPeriodeLabel={previousPeriodeLabel}
-          />
+          <StatSummaryCards summary={currentSummary} periodeLabel={currentPeriodeLabel} />
         )}
 
         {/* View Switcher Content */}
@@ -509,8 +496,6 @@ export default function App() {
             onEditRegion={handleOpenDataEntryForRegion}
             onOpenHalaqahPage={handleOpenHalaqahPage}
             halaqahRecords={halaqahRecords}
-            previousRecords={previousMonthRecords}
-            previousPeriodeLabel={previousPeriodeLabel}
           />
         )}
 
@@ -547,8 +532,6 @@ export default function App() {
             records={currentMonthRecords}
             periodeLabel={currentPeriodeLabel}
             regionList={WILAYAH_LIST}
-            previousRecords={previousMonthRecords}
-            previousPeriodeLabel={previousPeriodeLabel}
           />
         )}
 

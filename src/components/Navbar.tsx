@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { UserSession, ViewTab } from '../types';
-import { DAFTAR_PERIODE, getPeriodeBadgeInfo } from '../data/initialData';
+import { DAFTAR_PERIODE } from '../data/initialData';
 import {
   Landmark,
   TableProperties,
@@ -43,25 +43,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onExportPdf,
   onLogout,
 }) => {
-  const [periodeTypeFilter, setPeriodeTypeFilter] = useState<
-    'all' | '1-tahun' | '4-bulanan' | '2-bulanan' | 'bulanan'
-  >('all');
-
-  const handleSelectPeriodeType = (
-    type: 'all' | '1-tahun' | '4-bulanan' | '2-bulanan' | 'bulanan'
-  ) => {
-    setPeriodeTypeFilter(type);
-    if (type !== 'all') {
-      const currentItem = DAFTAR_PERIODE.find((p) => p.value === selectedPeriode);
-      if (currentItem?.type !== type) {
-        const firstMatching = DAFTAR_PERIODE.find((p) => p.type === type);
-        if (firstMatching) {
-          setSelectedPeriode(firstMatching.value);
-        }
-      }
-    }
-  };
-
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs no-print">
       {/* Top Strip */}
@@ -89,89 +70,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Period selector & Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Periode Selector & Quick Filter Pills */}
-            <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-2xl border border-slate-200">
-              {/* Type Filter Buttons (visible on xl screens) */}
-              <div className="hidden xl:flex items-center gap-0.5 pr-1 border-r border-slate-200">
-                {(
-                  [
-                    { id: 'all', label: 'Semua' },
-                    { id: '1-tahun', label: '1 Thn' },
-                    { id: '4-bulanan', label: '4 Bln' },
-                    { id: '2-bulanan', label: '2 Bln' },
-                    { id: 'bulanan', label: 'Bln' },
-                  ] as const
-                ).map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => handleSelectPeriodeType(t.id)}
-                    className={`px-2 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
-                      periodeTypeFilter === t.id
-                        ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                    }`}
-                  >
-                    {t.label}
-                  </button>
+            {/* Periode Dropdown */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700">
+              <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              <select
+                value={selectedPeriode}
+                onChange={(e) => setSelectedPeriode(e.target.value)}
+                className="bg-transparent font-medium text-slate-800 focus:outline-none cursor-pointer pr-1"
+              >
+                {DAFTAR_PERIODE.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
                 ))}
-              </div>
-
-              {/* Periode Dropdown */}
-              <div className="flex items-center gap-1.5 px-2 py-1 text-xs text-slate-700">
-                <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                <select
-                  value={selectedPeriode}
-                  onChange={(e) => setSelectedPeriode(e.target.value)}
-                  className="bg-transparent font-medium text-slate-800 focus:outline-none cursor-pointer pr-1 max-w-[200px] sm:max-w-none truncate"
-                >
-                  {periodeTypeFilter === 'all' ? (
-                    <>
-                      <optgroup label="── 1 Tahun (Sep - Agu) ──">
-                        {DAFTAR_PERIODE.filter((p) => p.type === '1-tahun').map((p) => (
-                          <option key={p.value} value={p.value}>
-                            {p.label}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="── 4 Bulanan (Caturwulan - Sep - Des, Mei - Agu, Jan - Apr) ──">
-                        {DAFTAR_PERIODE.filter((p) => p.type === '4-bulanan').map((p) => (
-                          <option key={p.value} value={p.value}>
-                            {p.label}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="── 2 Bulanan (Diawali September) ──">
-                        {DAFTAR_PERIODE.filter((p) => p.type === '2-bulanan').map((p) => (
-                          <option key={p.value} value={p.value}>
-                            {p.label}
-                          </option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="── Bulanan ──">
-                        {DAFTAR_PERIODE.filter((p) => p.type === 'bulanan').map((p) => (
-                          <option key={p.value} value={p.value}>
-                            {p.label}
-                          </option>
-                        ))}
-                      </optgroup>
-                    </>
-                  ) : (
-                    DAFTAR_PERIODE.filter((p) => p.type === periodeTypeFilter).map((p) => (
-                      <option key={p.value} value={p.value}>
-                        {p.label}
-                      </option>
-                    ))
-                  )}
-                </select>
-                {/* Active Period Type Badge */}
-                <span
-                  className={`hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold border rounded-md shrink-0 ${
-                    getPeriodeBadgeInfo(selectedPeriode).badgeClass
-                  }`}
-                >
-                  {getPeriodeBadgeInfo(selectedPeriode).label}
-                </span>
-              </div>
+              </select>
             </div>
 
             {/* Input Data Button */}

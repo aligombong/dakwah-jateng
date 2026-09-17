@@ -1,19 +1,8 @@
-export type PeriodeType = '1-tahun' | '4-bulanan' | '2-bulanan' | 'bulanan';
-
-export interface PeriodeItem {
-  value: string;
-  label: string;
-  type: PeriodeType;
-  group: string;
-  shortLabel?: string;
-  keterangan?: string;
-}
-
 export interface MaqamiRecord {
   id: string;
   wilayah: string; // e.g. "MAGELANG", "SOLO", etc.
-  periode: string; // e.g. "2026-09" (format YYYY-MM) or "1t-2025-2026", "4b-2026-sep-des", "2b-2026-sep-okt"
-  periodeLabel: string; // e.g. "September 2026", "4 Bulanan: Sep - Des 2026 (Caturwulan I)"
+  periode: string; // e.g. "2026-09" (format YYYY-MM)
+  periodeLabel: string; // e.g. "September 2026"
   
   // 1. JUMLAH HALAQAH
   jumlahHalaqah: number;
