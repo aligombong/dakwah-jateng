@@ -1,6 +1,6 @@
 import React from 'react';
 import { MaqamiRecord } from '../types';
-import { calculateSummary, formatNumberIndo } from '../utils/calculations';
+import { calculateSummary, formatNumberIndo, calculateDelta } from '../utils/calculations';
 import { SUB_WILAYAH_DATA, TOTAL_SUB_WILAYAH_COUNT } from '../data/subWilayahData';
 import {
   Compass,
@@ -9,24 +9,54 @@ import {
   Home,
   GraduationCap,
   TrendingUp,
+  TrendingDown,
   Target,
   Award,
   AlertCircle,
   MapPin,
+  ArrowUpDown,
 } from 'lucide-react';
 
 interface ExecutiveSummaryViewProps {
   records: MaqamiRecord[];
   periodeLabel: string;
   regionList: string[];
+  previousRecords?: MaqamiRecord[];
+  previousPeriodeLabel?: string;
 }
 
 export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
   records,
   periodeLabel,
   regionList,
+  previousRecords,
+  previousPeriodeLabel,
 }) => {
   const summary = calculateSummary(records);
+  const prevSummary =
+    previousRecords && previousRecords.length > 0
+      ? calculateSummary(previousRecords)
+      : undefined;
+
+  // Delta calculations
+  const deltaKarkun4Bulan = prevSummary
+    ? calculateDelta(summary.karkun4Bulan, prevSummary.karkun4Bulan)
+    : null;
+  const deltaKarkun40Hari = prevSummary
+    ? calculateDelta(summary.karkun40Hari, prevSummary.karkun40Hari)
+    : null;
+  const deltaMasjid5Amal = prevSummary
+    ? calculateDelta(summary.masjid5Amal, prevSummary.masjid5Amal)
+    : null;
+  const deltaJamaahRangka = prevSummary
+    ? calculateDelta(summary.jamaahRangka, prevSummary.jamaahRangka)
+    : null;
+  const deltaTotalKarkun = prevSummary
+    ? calculateDelta(summary.totalKarkun, prevSummary.totalKarkun)
+    : null;
+  const deltaMasjidAdaAmal = prevSummary
+    ? calculateDelta(summary.totalMasjidAdaAmal, prevSummary.totalMasjidAdaAmal)
+    : null;
 
   // Calculate Region Rankings for Karkun
   const sortedByKarkun = [...records].sort((a, b) => {
@@ -78,33 +108,73 @@ export const ExecutiveSummaryView: React.FC<ExecutiveSummaryViewProps> = ({
             <strong className="text-emerald-400 font-bold">{formatNumberIndo(summary.totalMasjidAdaAmal)}</strong> masjid yang telah menghidupkan amal masjid, serta{' '}
             <strong className="text-emerald-400 font-bold">{formatNumberIndo(summary.masturatTaklimRumahHarian)}</strong> taklim rumah harian masturat.
           </p>
+
+          {/* Comparative Trend Narrative */}
+          {deltaTotalKarkun && previousPeriodeLabel && (
+            <div className="mt-3 inline-flex items-center gap-2 text-xs bg-emerald-900/40 border border-emerald-500/30 text-emerald-200 px-3 py-1.5 rounded-xl">
+              <ArrowUpDown className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>
+                <strong>Komparasi Periode:</strong> Dibandingkan <em>{previousPeriodeLabel}</em>, total karkun{' '}
+                <span className="font-bold text-white">{deltaTotalKarkun.formattedDiff}</span> ({deltaTotalKarkun.formattedPercent}) dan masjid beramal{' '}
+                <span className="font-bold text-white">{deltaMasjidAdaAmal?.formattedDiff || '0'}</span>.
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Highlight Stats Row */}
+        {/* Highlight Stats Row with Deltas */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-slate-700/80">
           <div className="bg-white/5 rounded-2xl p-3 border border-white/10">
-            <span className="text-[11px] text-slate-400 block">Total Karkun 4 Bulan</span>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-slate-400 block">Karkun 4 Bulan</span>
+              {deltaKarkun4Bulan && (
+                <span className={`text-[10px] font-bold ${deltaKarkun4Bulan.isIncrease ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {deltaKarkun4Bulan.formattedDiff}
+                </span>
+              )}
+            </div>
             <span className="text-lg font-bold text-white mt-0.5 block font-mono">
               {formatNumberIndo(summary.karkun4Bulan)}
             </span>
           </div>
 
           <div className="bg-white/5 rounded-2xl p-3 border border-white/10">
-            <span className="text-[11px] text-slate-400 block">Total Karkun 40 Hari</span>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-slate-400 block">Karkun 40 Hari</span>
+              {deltaKarkun40Hari && (
+                <span className={`text-[10px] font-bold ${deltaKarkun40Hari.isIncrease ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {deltaKarkun40Hari.formattedDiff}
+                </span>
+              )}
+            </div>
             <span className="text-lg font-bold text-white mt-0.5 block font-mono">
               {formatNumberIndo(summary.karkun40Hari)}
             </span>
           </div>
 
           <div className="bg-white/5 rounded-2xl p-3 border border-white/10">
-            <span className="text-[11px] text-slate-400 block">Masjid 5 Amal</span>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-slate-400 block">Masjid 5 Amal</span>
+              {deltaMasjid5Amal && (
+                <span className={`text-[10px] font-bold ${deltaMasjid5Amal.isIncrease ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {deltaMasjid5Amal.formattedDiff}
+                </span>
+              )}
+            </div>
             <span className="text-lg font-bold text-emerald-400 mt-0.5 block font-mono">
               {formatNumberIndo(summary.masjid5Amal)}
             </span>
           </div>
 
           <div className="bg-white/5 rounded-2xl p-3 border border-white/10">
-            <span className="text-[11px] text-slate-400 block">Jama'ah Rangka</span>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-slate-400 block">Jama'ah Rangka</span>
+              {deltaJamaahRangka && (
+                <span className={`text-[10px] font-bold ${deltaJamaahRangka.isIncrease ? 'text-teal-300' : 'text-rose-400'}`}>
+                  {deltaJamaahRangka.formattedDiff}
+                </span>
+              )}
+            </div>
             <span className="text-lg font-bold text-teal-300 mt-0.5 block font-mono">
               {formatNumberIndo(summary.jamaahRangka)}
             </span>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MaqamiRecord, HalaqahMaqamiRecord } from '../types';
-import { calculateSummary, formatNumberIndo } from '../utils/calculations';
+import { calculateSummary, formatNumberIndo, calculateDelta, DeltaMetric } from '../utils/calculations';
 import { SUB_WILAYAH_DATA, TOTAL_SUB_WILAYAH_COUNT } from '../data/subWilayahData';
 import {
   Edit2,
@@ -15,12 +15,19 @@ import {
   Layers,
   Sigma,
   Info,
+  TrendingUp,
+  TrendingDown,
+  Minus,
 } from 'lucide-react';
+
+type TableDisplayMode = 'both' | 'value' | 'delta';
 
 interface MaqamiTableProps {
   records: MaqamiRecord[];
   regionList: string[];
   periodeLabel: string;
+  previousRecords?: MaqamiRecord[];
+  previousPeriodeLabel?: string;
   halaqahRecords?: HalaqahMaqamiRecord[];
   onEditRegion: (wilayah: string) => void;
   onOpenHalaqahPage?: (wilayah: string, halaqah: string) => void;
@@ -30,12 +37,15 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
   records,
   regionList,
   periodeLabel,
+  previousRecords,
+  previousPeriodeLabel,
   halaqahRecords = [],
   onEditRegion,
   onOpenHalaqahPage,
 }) => {
   const [hoveredCol, setHoveredCol] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [displayMode, setDisplayMode] = useState<TableDisplayMode>('both');
   const [halaqahModal, setHalaqahModal] = useState<{
     wilayah: string;
     title: string;
@@ -45,7 +55,15 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
   const recordMap = new Map<string, MaqamiRecord>();
   records.forEach((r) => recordMap.set(r.wilayah, r));
 
+  const prevRecordMap = new Map<string, MaqamiRecord>();
+  if (previousRecords) {
+    previousRecords.forEach((r) => prevRecordMap.set(r.wilayah, r));
+  }
+
   const summary = calculateSummary(records);
+  const prevSummary = previousRecords && previousRecords.length > 0
+    ? calculateSummary(previousRecords)
+    : undefined;
 
   interface TableRowDef {
     id: string;
@@ -239,7 +257,7 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
       {/* Table Top Toolbar */}
-      <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
         <div>
           <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
             <span>DATA MAQAMI & POTENSI KERJA DAKWAH JAWA TENGAH</span>
@@ -255,8 +273,47 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
           </div>
         </div>
 
-        {/* Quick Search in table & Halaqah button */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        {/* Action Controls & Mode Selector */}
+        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+          {/* Display Mode Toggle */}
+          <div className="flex items-center bg-slate-200/80 p-0.5 rounded-xl text-xs font-semibold">
+            <button
+              onClick={() => setDisplayMode('both')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                displayMode === 'both'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+              title="Tampilkan nilai saat ini beserta kenaikan/penurunan dari periode lalu"
+            >
+              <ArrowUpDown className="w-3 h-3 text-emerald-600" />
+              <span>Nilai & Selisih</span>
+            </button>
+            <button
+              onClick={() => setDisplayMode('value')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                displayMode === 'value'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+              title="Tampilkan nilai riil murni"
+            >
+              <span>Nilai Riil</span>
+            </button>
+            <button
+              onClick={() => setDisplayMode('delta')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                displayMode === 'delta'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+              title="Tampilkan khusus perubahan / selisih (+/-)"
+            >
+              <TrendingUp className="w-3 h-3 text-emerald-600" />
+              <span>Hanya Selisih (+/-)</span>
+            </button>
+          </div>
+
           <button
             onClick={() =>
               setHalaqahModal({
@@ -273,18 +330,48 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
             <span>Daftar 151 Halaqoh</span>
           </button>
 
-          <div className="relative w-full sm:w-56">
+          <div className="relative w-full sm:w-48">
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Cari uraian data..."
+              placeholder="Cari uraian..."
               className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
             />
           </div>
         </div>
       </div>
+
+      {/* Comparison & Delta Explanation Banner */}
+      {previousPeriodeLabel && (
+        <div className="px-4 py-2 bg-gradient-to-r from-emerald-50/70 via-slate-50 to-blue-50/70 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+              <ArrowUpDown className="w-3.5 h-3.5 text-emerald-600" />
+              Perbandingan Periode:
+            </span>
+            <span className="bg-white border border-slate-300 font-bold text-slate-900 px-2 py-0.5 rounded-md text-[11px] shadow-2xs">
+              {periodeLabel} (Saat Ini)
+            </span>
+            <span className="text-slate-400 text-[11px]">&bull; dibandingkan dengan</span>
+            <span className="bg-amber-50 border border-amber-200 font-bold text-amber-900 px-2 py-0.5 rounded-md text-[11px] shadow-2xs">
+              {previousPeriodeLabel} (Sebelumnya)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 text-[11px]">
+            <span className="inline-flex items-center gap-1 text-slate-600">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+              <strong className="text-emerald-700">+ Hijau</strong>: Kenaikan dari periode lalu
+            </span>
+            <span className="inline-flex items-center gap-1 text-slate-600">
+              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>
+              <strong className="text-rose-700">- Merah</strong>: Penurunan dari periode lalu
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Table Container */}
       <div className="overflow-x-auto">
@@ -388,7 +475,10 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                   {/* REGIONAL VALUES */}
                   {regionList.map((wil) => {
                     const rec = recordMap.get(wil);
+                    const prevRec = prevRecordMap.get(wil);
                     const val = rec ? row.getValue(rec) : 0;
+                    const prevVal = prevRec ? row.getValue(prevRec) : undefined;
+                    const delta = prevVal !== undefined ? calculateDelta(val, prevVal) : null;
                     const isColHovered = hoveredCol === wil;
                     const isHalaqahRow = row.id === 'halaqah-jml';
                     const halaqahList = SUB_WILAYAH_DATA[wil] || [];
@@ -423,44 +513,117 @@ export const MaqamiTable: React.FC<MaqamiTableProps> = ({
                               info
                             </span>
                           </button>
-                        ) : val === 0 && !row.isTotal ? (
-                          <span className="text-slate-300">-</span>
+                        ) : displayMode === 'delta' ? (
+                          delta && !delta.isZero ? (
+                            <span
+                              className={`inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[11px] font-bold ${
+                                delta.isIncrease
+                                  ? 'bg-emerald-50 text-emerald-700'
+                                  : 'bg-rose-50 text-rose-700'
+                              }`}
+                              title={`Saat ini: ${formatNumberIndo(val)} | Lalu: ${formatNumberIndo(prevVal ?? 0)}`}
+                            >
+                              {delta.isIncrease ? '+' : ''}{formatNumberIndo(delta.diff)}
+                            </span>
+                          ) : (
+                            <span className="text-slate-300 text-[11px]">0</span>
+                          )
                         ) : (
-                          formatNumberIndo(val)
+                          <div className="flex flex-col items-end">
+                            <span className={val === 0 && !row.isTotal ? 'text-slate-300' : ''}>
+                              {val === 0 && !row.isTotal ? '-' : formatNumberIndo(val)}
+                            </span>
+                            {displayMode === 'both' && delta && !delta.isZero && (
+                              <span
+                                className={`text-[10px] leading-tight font-bold ${
+                                  delta.isIncrease ? 'text-emerald-600' : 'text-rose-600'
+                                }`}
+                                title={`Periode sebelumnya: ${formatNumberIndo(prevVal ?? 0)} | Selisih: ${delta.formattedDiff}`}
+                              >
+                                {delta.formattedDiff}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </td>
                     );
                   })}
 
                   {/* TOTAL JAWA TENGAH (Sticky Right) */}
-                  <td
-                    className={`sticky right-0 z-10 px-4 py-2 text-right font-mono font-bold text-xs tabular-nums border-l border-slate-300 transition-colors ${
-                      row.isTotal
-                        ? 'bg-emerald-100 text-emerald-900 font-extrabold'
-                        : 'bg-slate-50 group-hover:bg-emerald-50/80 text-slate-900'
-                    }`}
-                  >
-                    {row.id === 'halaqah-jml' ? (
-                      <button
-                        onClick={() =>
-                          setHalaqahModal({
-                            wilayah: 'ALL',
-                            title: `Total 151 Halaqoh (10 Markaz)`,
-                            items: Object.entries(SUB_WILAYAH_DATA).flatMap(([w, list]) =>
-                              list.map((name, i) => `${w}: #${i + 1} ${name}`)
-                            ),
-                          })
-                        }
-                        title="Klik untuk melihat seluruh 151 halaqoh"
-                        className="inline-flex items-center gap-1 font-extrabold text-emerald-900 hover:underline cursor-pointer"
+                  {(() => {
+                    const prevRowTotal = previousRecords && previousRecords.length > 0
+                      ? previousRecords.reduce((acc, r) => acc + (row.getValue(r) || 0), 0)
+                      : undefined;
+                    const totalDelta = prevRowTotal !== undefined ? calculateDelta(row.totalVal, prevRowTotal) : null;
+
+                    return (
+                      <td
+                        className={`sticky right-0 z-10 px-4 py-2 text-right font-mono font-bold text-xs tabular-nums border-l border-slate-300 transition-colors ${
+                          row.isTotal
+                            ? 'bg-emerald-100 text-emerald-900 font-extrabold'
+                            : 'bg-slate-50 group-hover:bg-emerald-50/80 text-slate-900'
+                        }`}
                       >
-                        <span>{formatNumberIndo(row.totalVal)}</span>
-                        <span className="text-[10px] text-emerald-700 font-normal">Halaqoh</span>
-                      </button>
-                    ) : (
-                      formatNumberIndo(row.totalVal)
-                    )}
-                  </td>
+                        {row.id === 'halaqah-jml' ? (
+                          <button
+                            onClick={() =>
+                              setHalaqahModal({
+                                wilayah: 'ALL',
+                                title: `Total 151 Halaqoh (10 Markaz)`,
+                                items: Object.entries(SUB_WILAYAH_DATA).flatMap(([w, list]) =>
+                                  list.map((name, i) => `${w}: #${i + 1} ${name}`)
+                                ),
+                              })
+                            }
+                            title="Klik untuk melihat seluruh 151 halaqoh"
+                            className="inline-flex items-center gap-1 font-extrabold text-emerald-900 hover:underline cursor-pointer"
+                          >
+                            <span>{formatNumberIndo(row.totalVal)}</span>
+                            <span className="text-[10px] text-emerald-700 font-normal">Halaqoh</span>
+                          </button>
+                        ) : displayMode === 'delta' ? (
+                          totalDelta && !totalDelta.isZero ? (
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-extrabold border ${totalDelta.badgeClass}`}
+                              title={`Saat ini: ${formatNumberIndo(row.totalVal)} | Lalu: ${formatNumberIndo(totalDelta.previous)}`}
+                            >
+                              {totalDelta.isIncrease ? (
+                                <TrendingUp className="w-2.5 h-2.5" />
+                              ) : (
+                                <TrendingDown className="w-2.5 h-2.5" />
+                              )}
+                              <span>{totalDelta.formattedDiff}</span>
+                              <span className="opacity-80">({totalDelta.formattedPercent})</span>
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 font-normal">0 (0%)</span>
+                          )
+                        ) : (
+                          <div className="flex flex-col items-end">
+                            <span className="font-extrabold">{formatNumberIndo(row.totalVal)}</span>
+                            {displayMode === 'both' && totalDelta && (
+                              <div className="text-[10px] leading-tight mt-0.5 flex items-center justify-end gap-0.5">
+                                <span
+                                  className={`inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded font-bold border ${totalDelta.badgeClass}`}
+                                  title={`Periode sebelumnya: ${formatNumberIndo(totalDelta.previous)} | Selisih: ${totalDelta.formattedDiff}`}
+                                >
+                                  {totalDelta.isIncrease ? (
+                                    <TrendingUp className="w-2.5 h-2.5 shrink-0" />
+                                  ) : totalDelta.isDecrease ? (
+                                    <TrendingDown className="w-2.5 h-2.5 shrink-0" />
+                                  ) : (
+                                    <Minus className="w-2.5 h-2.5 shrink-0" />
+                                  )}
+                                  <span>{totalDelta.formattedDiff}</span>
+                                  <span className="opacity-80">({totalDelta.formattedPercent})</span>
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })()}
                 </tr>
               );
             })}

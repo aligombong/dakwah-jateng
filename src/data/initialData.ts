@@ -752,3 +752,31 @@ export function generateInitialData(): MaqamiRecord[] {
 
   return records;
 }
+
+/**
+ * Get the logical previous period for comparison based on period category.
+ * If viewing monthly (e.g. Sep 2026), returns Aug 2026.
+ * If viewing 2-bulanan (e.g. Sep-Okt 2026), returns Jul-Agu 2026.
+ * If viewing 4-bulanan (e.g. Sep-Des 2026), returns Mei-Agu 2026.
+ * If viewing 1-tahun (e.g. 2026-2027), returns 2025-2026.
+ */
+export function getPreviousPeriode(currentPeriodeValue: string): PeriodeItem | undefined {
+  const current = DAFTAR_PERIODE.find((p) => p.value === currentPeriodeValue);
+  if (!current) return undefined;
+
+  // First try finding the previous period within the same type (e.g. bulanan -> previous bulanan)
+  const sameTypePeriods = DAFTAR_PERIODE.filter((p) => p.type === current.type);
+  const currentIndex = sameTypePeriods.findIndex((p) => p.value === currentPeriodeValue);
+
+  if (currentIndex >= 0 && currentIndex < sameTypePeriods.length - 1) {
+    return sameTypePeriods[currentIndex + 1];
+  }
+
+  // Fallback: search in overall list
+  const fullIndex = DAFTAR_PERIODE.findIndex((p) => p.value === currentPeriodeValue);
+  if (fullIndex >= 0 && fullIndex < DAFTAR_PERIODE.length - 1) {
+    return DAFTAR_PERIODE[fullIndex + 1];
+  }
+
+  return undefined;
+}

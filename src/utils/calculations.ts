@@ -115,3 +115,60 @@ export function formatNumberIndo(num: number | string | undefined | null): strin
   const result = decimalPart !== undefined ? `${formattedInteger},${decimalPart}` : formattedInteger;
   return isNegative ? `-${result}` : result;
 }
+
+export interface DeltaMetric {
+  current: number;
+  previous: number;
+  diff: number;
+  percent: number;
+  isIncrease: boolean;
+  isDecrease: boolean;
+  isZero: boolean;
+  formattedDiff: string;
+  formattedPercent: string;
+  badgeClass: string;
+  textClass: string;
+}
+
+export function calculateDelta(current: number = 0, previous: number = 0): DeltaMetric {
+  const curr = Number(current) || 0;
+  const prev = Number(previous) || 0;
+  const diff = curr - prev;
+  const percent = prev > 0 ? ((curr - prev) / prev) * 100 : curr > 0 ? 100 : 0;
+  const isIncrease = diff > 0;
+  const isDecrease = diff < 0;
+  const isZero = diff === 0;
+
+  const formattedDiff = isIncrease ? `+${formatNumberIndo(diff)}` : formatNumberIndo(diff);
+  const formattedPercent = isIncrease
+    ? `+${percent.toFixed(1)}%`
+    : isDecrease
+    ? `${percent.toFixed(1)}%`
+    : '0%';
+
+  const badgeClass = isIncrease
+    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    : isDecrease
+    ? 'bg-rose-50 text-rose-700 border-rose-200'
+    : 'bg-slate-50 text-slate-600 border-slate-200';
+
+  const textClass = isIncrease
+    ? 'text-emerald-700 font-semibold'
+    : isDecrease
+    ? 'text-rose-600 font-semibold'
+    : 'text-slate-500';
+
+  return {
+    current: curr,
+    previous: prev,
+    diff,
+    percent,
+    isIncrease,
+    isDecrease,
+    isZero,
+    formattedDiff,
+    formattedPercent,
+    badgeClass,
+    textClass,
+  };
+}
