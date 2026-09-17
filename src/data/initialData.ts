@@ -1,4 +1,4 @@
-import { MaqamiRecord, UserSession } from '../types';
+import { MaqamiRecord, UserSession, PeriodeItem } from '../types';
 import { generateHalaqahAccounts } from './subWilayahData';
 
 export const WILAYAH_LIST = [
@@ -16,17 +16,227 @@ export const WILAYAH_LIST = [
 
 export const MARKAZ_LIST = WILAYAH_LIST;
 
-export const DAFTAR_PERIODE = [
-  { value: '2026-09', label: 'September 2026' },
-  { value: '2026-08', label: 'Agustus 2026' },
-  { value: '2026-07', label: 'Juli 2026' },
-  { value: '2026-06', label: 'Juni 2026' },
-  { value: '2026-05', label: 'Mei 2026' },
-  { value: '2026-04', label: 'April 2026' },
-  { value: '2026-03', label: 'Maret 2026' },
-  { value: '2026-02', label: 'Februari 2026' },
-  { value: '2026-01', label: 'Januari 2026' },
+export const DAFTAR_PERIODE: PeriodeItem[] = [
+  // 1. 1 TAHUN (Diawali September)
+  {
+    value: '1t-2026-2027',
+    label: '1 Tahun: Sep 2026 - Agu 2027 (Berjalan)',
+    shortLabel: '1 Thn 26/27',
+    type: '1-tahun',
+    group: '1 Tahun (Sep - Agu)',
+    keterangan: 'Tahun dakwah berjalan diawali September 2026',
+  },
+  {
+    value: '1t-2025-2026',
+    label: '1 Tahun: Sep 2025 - Agu 2026 (Tahun Penuh)',
+    shortLabel: '1 Thn 25/26',
+    type: '1-tahun',
+    group: '1 Tahun (Sep - Agu)',
+    keterangan: 'Tahun dakwah penuh September 2025 s.d. Agustus 2026',
+  },
+  {
+    value: '1t-2024-2025',
+    label: '1 Tahun: Sep 2024 - Agu 2025',
+    shortLabel: '1 Thn 24/25',
+    type: '1-tahun',
+    group: '1 Tahun (Sep - Agu)',
+    keterangan: 'Tahun dakwah September 2024 s.d. Agustus 2025',
+  },
+
+  // 2. 4 BULANAN (Caturwulan - Diawali September)
+  {
+    value: '4b-2026-sep-des',
+    label: '4 Bulanan: Sep - Des 2026 (Caturwulan I)',
+    shortLabel: '4B Sep-Des 26',
+    type: '4-bulanan',
+    group: '4 Bulanan (Caturwulan)',
+    keterangan: 'Caturwulan I (Sep - Des 2026)',
+  },
+  {
+    value: '4b-2026-mei-agu',
+    label: '4 Bulanan: Mei - Agu 2026 (Caturwulan III)',
+    shortLabel: '4B Mei-Agu 26',
+    type: '4-bulanan',
+    group: '4 Bulanan (Caturwulan)',
+    keterangan: 'Caturwulan III (Mei - Agu 2026)',
+  },
+  {
+    value: '4b-2026-jan-apr',
+    label: '4 Bulanan: Jan - Apr 2026 (Caturwulan II)',
+    shortLabel: '4B Jan-Apr 26',
+    type: '4-bulanan',
+    group: '4 Bulanan (Caturwulan)',
+    keterangan: 'Caturwulan II (Jan - Apr 2026)',
+  },
+  {
+    value: '4b-2025-sep-des',
+    label: '4 Bulanan: Sep - Des 2025 (Caturwulan I)',
+    shortLabel: '4B Sep-Des 25',
+    type: '4-bulanan',
+    group: '4 Bulanan (Caturwulan)',
+    keterangan: 'Caturwulan I (Sep - Des 2025)',
+  },
+
+  // 3. 2 BULANAN (Dua Bulanan - Diawali September)
+  {
+    value: '2b-2026-sep-okt',
+    label: '2 Bulanan: Sep - Okt 2026 (Siklus 1)',
+    shortLabel: '2B Sep-Okt 26',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 1 diawali September (Sep - Okt 2026)',
+  },
+  {
+    value: '2b-2026-jul-agu',
+    label: '2 Bulanan: Jul - Agu 2026 (Siklus 6)',
+    shortLabel: '2B Jul-Agu 26',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 6 akhir tahun dakwah (Jul - Agu 2026)',
+  },
+  {
+    value: '2b-2026-mei-jun',
+    label: '2 Bulanan: Mei - Jun 2026 (Siklus 5)',
+    shortLabel: '2B Mei-Jun 26',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 5 (Mei - Jun 2026)',
+  },
+  {
+    value: '2b-2026-mar-apr',
+    label: '2 Bulanan: Mar - Apr 2026 (Siklus 4)',
+    shortLabel: '2B Mar-Apr 26',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 4 (Mar - Apr 2026)',
+  },
+  {
+    value: '2b-2026-jan-feb',
+    label: '2 Bulanan: Jan - Feb 2026 (Siklus 3)',
+    shortLabel: '2B Jan-Feb 26',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 3 (Jan - Feb 2026)',
+  },
+  {
+    value: '2b-2025-nov-des',
+    label: '2 Bulanan: Nov - Des 2025 (Siklus 2)',
+    shortLabel: '2B Nov-Des 25',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 2 (Nov - Des 2025)',
+  },
+  {
+    value: '2b-2025-sep-okt',
+    label: '2 Bulanan: Sep - Okt 2025 (Siklus 1)',
+    shortLabel: '2B Sep-Okt 25',
+    type: '2-bulanan',
+    group: '2 Bulanan',
+    keterangan: 'Siklus 1 (Sep - Okt 2025)',
+  },
+
+  // 4. BULANAN
+  {
+    value: '2026-09',
+    label: 'September 2026',
+    shortLabel: 'Sep 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan September 2026',
+  },
+  {
+    value: '2026-08',
+    label: 'Agustus 2026',
+    shortLabel: 'Agu 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Agustus 2026',
+  },
+  {
+    value: '2026-07',
+    label: 'Juli 2026',
+    shortLabel: 'Jul 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Juli 2026',
+  },
+  {
+    value: '2026-06',
+    label: 'Juni 2026',
+    shortLabel: 'Jun 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Juni 2026',
+  },
+  {
+    value: '2026-05',
+    label: 'Mei 2026',
+    shortLabel: 'Mei 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Mei 2026',
+  },
+  {
+    value: '2026-04',
+    label: 'April 2026',
+    shortLabel: 'Apr 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan April 2026',
+  },
+  {
+    value: '2026-03',
+    label: 'Maret 2026',
+    shortLabel: 'Mar 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Maret 2026',
+  },
+  {
+    value: '2026-02',
+    label: 'Februari 2026',
+    shortLabel: 'Feb 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Februari 2026',
+  },
+  {
+    value: '2026-01',
+    label: 'Januari 2026',
+    shortLabel: 'Jan 2026',
+    type: 'bulanan',
+    group: 'Bulanan',
+    keterangan: 'Laporan bulanan Januari 2026',
+  },
 ];
+
+export function getPeriodeBadgeInfo(value: string): { label: string; badgeClass: string } {
+  const p = DAFTAR_PERIODE.find((x) => x.value === value);
+  const type = p?.type || 'bulanan';
+  switch (type) {
+    case '1-tahun':
+      return {
+        label: '1 Tahun (Sep-Agu)',
+        badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+      };
+    case '4-bulanan':
+      return {
+        label: '4 Bulanan (Caturwulan)',
+        badgeClass: 'bg-blue-100 text-blue-900 border-blue-300',
+      };
+    case '2-bulanan':
+      return {
+        label: '2 Bulanan',
+        badgeClass: 'bg-purple-100 text-purple-900 border-purple-300',
+      };
+    case 'bulanan':
+    default:
+      return {
+        label: 'Bulanan',
+        badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+      };
+  }
+}
 
 export const BASE_DEFAULT_USERS: UserSession[] = [
   {
@@ -392,6 +602,150 @@ export function generateInitialData(): MaqamiRecord[] {
         pelajarKeluar1Hari: Math.max(0, Math.round((raw.pelajarKeluar1Hari ?? 0) * factor)),
         updatedAt: date,
         updatedBy: 'Sistem Sinkronisasi',
+      });
+    });
+  });
+
+  // 2 Bulanan, 4 Bulanan, and 1 Tahun multi-month configurations starting in September
+  const multiMonthConfigs = [
+    // 1 Tahun (Diawali September)
+    {
+      periode: '1t-2026-2027',
+      label: '1 Tahun: Sep 2026 - Agu 2027 (Berjalan)',
+      keluarFactor: 11.8,
+      amalFactor: 1.05,
+      date: '2026-09-08 10:00',
+    },
+    {
+      periode: '1t-2025-2026',
+      label: '1 Tahun: Sep 2025 - Agu 2026 (Tahun Penuh)',
+      keluarFactor: 11.2,
+      amalFactor: 0.98,
+      date: '2026-08-31 20:00',
+    },
+    {
+      periode: '1t-2024-2025',
+      label: '1 Tahun: Sep 2024 - Agu 2025',
+      keluarFactor: 10.4,
+      amalFactor: 0.92,
+      date: '2025-08-31 20:00',
+    },
+
+    // 4 Bulanan (Caturwulan - Diawali September)
+    {
+      periode: '4b-2026-sep-des',
+      label: '4 Bulanan: Sep - Des 2026 (Caturwulan I)',
+      keluarFactor: 4.0,
+      amalFactor: 1.02,
+      date: '2026-09-08 09:30',
+    },
+    {
+      periode: '4b-2026-mei-agu',
+      label: '4 Bulanan: Mei - Agu 2026 (Caturwulan III)',
+      keluarFactor: 3.7,
+      amalFactor: 0.95,
+      date: '2026-08-30 18:00',
+    },
+    {
+      periode: '4b-2026-jan-apr',
+      label: '4 Bulanan: Jan - Apr 2026 (Caturwulan II)',
+      keluarFactor: 3.4,
+      amalFactor: 0.90,
+      date: '2026-04-30 18:00',
+    },
+    {
+      periode: '4b-2025-sep-des',
+      label: '4 Bulanan: Sep - Des 2025 (Caturwulan I)',
+      keluarFactor: 3.2,
+      amalFactor: 0.88,
+      date: '2025-12-30 18:00',
+    },
+
+    // 2 Bulanan (Dua Bulanan - Diawali September)
+    {
+      periode: '2b-2026-sep-okt',
+      label: '2 Bulanan: Sep - Okt 2026 (Siklus 1)',
+      keluarFactor: 2.05,
+      amalFactor: 1.02,
+      date: '2026-09-08 09:00',
+    },
+    {
+      periode: '2b-2026-jul-agu',
+      label: '2 Bulanan: Jul - Agu 2026 (Siklus 6)',
+      keluarFactor: 1.92,
+      amalFactor: 0.96,
+      date: '2026-08-30 18:00',
+    },
+    {
+      periode: '2b-2026-mei-jun',
+      label: '2 Bulanan: Mei - Jun 2026 (Siklus 5)',
+      keluarFactor: 1.82,
+      amalFactor: 0.92,
+      date: '2026-06-30 18:00',
+    },
+    {
+      periode: '2b-2026-mar-apr',
+      label: '2 Bulanan: Mar - Apr 2026 (Siklus 4)',
+      keluarFactor: 1.72,
+      amalFactor: 0.88,
+      date: '2026-04-30 18:00',
+    },
+    {
+      periode: '2b-2026-jan-feb',
+      label: '2 Bulanan: Jan - Feb 2026 (Siklus 3)',
+      keluarFactor: 1.62,
+      amalFactor: 0.84,
+      date: '2026-02-28 18:00',
+    },
+    {
+      periode: '2b-2025-nov-des',
+      label: '2 Bulanan: Nov - Des 2025 (Siklus 2)',
+      keluarFactor: 1.58,
+      amalFactor: 0.82,
+      date: '2025-12-30 18:00',
+    },
+    {
+      periode: '2b-2025-sep-okt',
+      label: '2 Bulanan: Sep - Okt 2025 (Siklus 1)',
+      keluarFactor: 1.52,
+      amalFactor: 0.80,
+      date: '2025-10-30 18:00',
+    },
+  ];
+
+  multiMonthConfigs.forEach(({ periode, label, keluarFactor, amalFactor, date }) => {
+    WILAYAH_LIST.forEach((wil) => {
+      const raw = RAW_SEPTEMBER_2026[wil] || {};
+      records.push({
+        id: `rec-${periode}-${wil.toLowerCase()}`,
+        wilayah: wil,
+        periode,
+        periodeLabel: label,
+        jumlahHalaqah: raw.jumlahHalaqah ?? 0,
+        jumlahMasjidMushalla: raw.jumlahMasjidMushalla ?? 0,
+        // Masjid amal
+        masjid5Amal: Math.max(0, Math.round((raw.masjid5Amal ?? 0) * amalFactor)),
+        masjid4Amal: Math.max(0, Math.round((raw.masjid4Amal ?? 0) * amalFactor)),
+        masjid3Amal: Math.max(0, Math.round((raw.masjid3Amal ?? 0) * amalFactor)),
+        masjid2Amal: Math.max(0, Math.round((raw.masjid2Amal ?? 0) * amalFactor)),
+        masjid1Amal: Math.max(0, Math.round((raw.masjid1Amal ?? 0) * amalFactor)),
+        // Masturat taklim
+        masturatTaklimRumahHarian: Math.max(0, Math.round((raw.masturatTaklimRumahHarian ?? 0) * amalFactor)),
+        masturatTaklimMahallaPekanan: Math.max(0, Math.round((raw.masturatTaklimMahallaPekanan ?? 0) * amalFactor)),
+        // Output / Keluar (cumulative output over the period)
+        jamaahRangka: Math.max(0, Math.round((raw.jamaahRangka ?? 0) * keluarFactor)),
+        jamaah3Hari: Math.max(0, Math.round((raw.jamaah3Hari ?? 0) * keluarFactor)),
+        karkunUlama1Tahun: Math.max(0, Math.round((raw.karkunUlama1Tahun ?? 0) * keluarFactor)),
+        karkun4Bulan: Math.max(0, Math.round((raw.karkun4Bulan ?? 0) * keluarFactor)),
+        karkun40Hari: Math.max(0, Math.round((raw.karkun40Hari ?? 0) * keluarFactor)),
+        masturat2BlnIP: Math.max(0, Math.round((raw.masturat2BlnIP ?? 0) * keluarFactor)),
+        masturat40Hari: Math.max(0, Math.round((raw.masturat40Hari ?? 0) * keluarFactor)),
+        masturat10_15Hari: Math.max(0, Math.round((raw.masturat10_15Hari ?? 0) * keluarFactor)),
+        masturat3Hari: Math.max(0, Math.round((raw.masturat3Hari ?? 0) * keluarFactor)),
+        pelajarKeluar1Hari: Math.max(0, Math.round((raw.pelajarKeluar1Hari ?? 0) * keluarFactor)),
+        pelajarMalamMarkaz: Math.max(0, Math.round((raw.pelajarMalamMarkaz ?? 0) * (keluarFactor > 2 ? 1.4 : keluarFactor))),
+        updatedAt: date,
+        updatedBy: 'Sistem Sinkronisasi Multi-Periode',
       });
     });
   });

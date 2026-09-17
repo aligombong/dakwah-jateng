@@ -219,11 +219,34 @@ export const DataEntryModal: React.FC<DataEntryModalProps> = ({
               onChange={(e) => setPeriode(e.target.value)}
               className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
             >
-              {DAFTAR_PERIODE.map((p) => (
-                <option key={p.value} value={p.value}>
-                  {p.label}
-                </option>
-              ))}
+              <optgroup label="── 1 Tahun (Sep - Agu) ──">
+                {DAFTAR_PERIODE.filter((p) => p.type === '1-tahun').map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── 4 Bulanan (Caturwulan) ──">
+                {DAFTAR_PERIODE.filter((p) => p.type === '4-bulanan').map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── 2 Bulanan (Diawali September) ──">
+                {DAFTAR_PERIODE.filter((p) => p.type === '2-bulanan').map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── Bulanan ──">
+                {DAFTAR_PERIODE.filter((p) => p.type === 'bulanan').map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </optgroup>
             </select>
           </div>
         </div>
